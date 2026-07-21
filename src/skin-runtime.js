@@ -501,23 +501,38 @@
       { kind: 'dislike', label: '踩', pattern: /^(?:不喜欢|dislike)$/i },
       { kind: 'share', label: '分享', pattern: /^(?:从这里继续新任务|continue(?: from here)?(?: in a)? new task|fork|share|分享)$/i },
     ];
+    const presentationForButton = (button) => presentations.find(({ pattern }) => (
+      pattern.test(normalize(button.getAttribute('aria-label')))
+    ));
+    const findMessageActionStrip = (button) => {
+      let candidate = button.parentElement;
+      while (candidate && candidate !== main) {
+        const matchingButtons = Array.from(candidate.querySelectorAll('button[aria-label]')).filter(presentationForButton);
+        const kinds = matchingButtons.map((matchingButton) => presentationForButton(matchingButton).kind);
+        if (
+          matchingButtons.length === presentations.length
+          && new Set(kinds).size === presentations.length
+        ) return candidate;
+        if (candidate.hasAttribute('data-turn-key')) return null;
+        candidate = candidate.parentElement;
+      }
+      return null;
+    };
+
+    // Earlier builds could climb past the compact footer and mark an entire
+    // virtualized turn as the action strip. align-items:center then let a long
+    // command establish a huge intrinsic width and moved the conversation out
+    // of the center pane. Clear every previous marker and re-scope it below.
+    for (const staleStrip of main.querySelectorAll('[data-qq2007-message-actions="true"]')) {
+      delete staleStrip.dataset.qq2007MessageActions;
+    }
     const messageButtons = Array.from(main.querySelectorAll('button[aria-label]'));
     for (const button of messageButtons) {
-      const presentation = presentations.find(({ pattern }) => pattern.test(normalize(button.getAttribute('aria-label'))));
+      const presentation = presentationForButton(button);
       if (!presentation) continue;
-      if (presentation.kind === 'copy') {
-        let actionCluster = button.parentElement;
-        let belongsToCompletedMessage = false;
-        while (actionCluster && actionCluster !== main) {
-          const clusterLabels = Array.from(actionCluster.querySelectorAll('button[aria-label]')).map((candidate) => normalize(candidate.getAttribute('aria-label')));
-          belongsToCompletedMessage = presentations.filter(({ kind, pattern }) => (
-            kind !== 'copy' && clusterLabels.some((value) => pattern.test(value))
-          )).length === presentations.length - 1;
-          if (belongsToCompletedMessage) break;
-          actionCluster = actionCluster.parentElement;
-        }
-        if (!belongsToCompletedMessage) continue;
-      }
+      const strip = findMessageActionStrip(button);
+      // Standalone and legacy partial controls still receive the retro icon,
+      // but only the four-action assistant footer receives strip layout.
       button.dataset.qq2007MessageAction = presentation.kind;
       const nativeIcon = Array.from(button.querySelectorAll('svg')).find((svg) => !svg.classList.contains('qq2007-message-action-icon'));
       if (nativeIcon) nativeIcon.dataset.qq2007MessageNativeIcon = 'true';
@@ -532,21 +547,14 @@
       }
       setText(label, presentation.label);
 
-      let strip = button.parentElement;
-      while (strip && strip !== main) {
-        const labels = Array.from(strip.querySelectorAll('button[aria-label]')).map((candidate) => normalize(candidate.getAttribute('aria-label')));
-        if (presentations.filter(({ pattern }) => labels.some((value) => pattern.test(value))).length === presentations.length) {
-          strip.dataset.qq2007MessageActions = 'true';
-          const footer = strip.parentElement;
-          const time = Array.from(footer?.querySelectorAll('time, span, div') || []).find((node) => {
-            if (node.closest('[data-qq2007-message-actions="true"]')) return false;
-            return /^(?:(?:今天|昨天|today|yesterday)\s*)?\d{1,2}:\d{2}$/i.test(normalize(node.textContent));
-          });
-          if (time) time.dataset.qq2007MessageTime = 'true';
-          break;
-        }
-        strip = strip.parentElement;
-      }
+      if (!strip) continue;
+      strip.dataset.qq2007MessageActions = 'true';
+      const footer = strip.parentElement;
+      const time = Array.from(footer?.querySelectorAll('time, span, div') || []).find((node) => {
+        if (node.closest('[data-qq2007-message-actions="true"]')) return false;
+        return /^(?:(?:今天|昨天|today|yesterday)\s*)?\d{1,2}:\d{2}$/i.test(normalize(node.textContent));
+      });
+      if (time) time.dataset.qq2007MessageTime = 'true';
     }
   };
 

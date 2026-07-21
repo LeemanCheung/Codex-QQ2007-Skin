@@ -1,4 +1,4 @@
-#requires -Version 5.1
+﻿#requires -Version 5.1
 
 [CmdletBinding()]
 param()
@@ -252,9 +252,18 @@ function Test-ClassicMessageActionsContract {
             Add-Failure "Missing classic message-action runtime contract: $contract"
         }
     }
-    foreach ($label in @("label: '复制'", "label: '赞'", "label: '踩'", "label: '分享'")) {
-        if (-not $runtime.Contains($label)) {
-            Add-Failure "Missing classic message-action label: $label"
+    foreach ($kind in @("kind: 'copy'", "kind: 'like'", "kind: 'dislike'", "kind: 'share'")) {
+        if (-not $runtime.Contains($kind)) {
+            Add-Failure "Missing classic message-action kind: $kind"
+        }
+    }
+    foreach ($contract in @(
+        'findMessageActionStrip',
+        'matchingButtons.length === presentations.length',
+        'delete staleStrip.dataset.qq2007MessageActions'
+    )) {
+        if (-not $runtime.Contains($contract)) {
+            Add-Failure "Missing scoped message-action strip contract: $contract"
         }
     }
     foreach ($selector in @('[data-qq2007-message-actions="true"]', 'button[data-qq2007-message-action]', '.qq2007-message-action-icon')) {
@@ -262,7 +271,13 @@ function Test-ClassicMessageActionsContract {
             Add-Failure "Missing classic message-action selector: $selector"
         }
     }
-    foreach ($contract in @('classicMessageActionsReady', 'classicMessageActionCount')) {
+    foreach ($contract in @(
+        'classicMessageActionsReady',
+        'classicMessageActionCount',
+        'classicMessageActionStripsScoped',
+        'conversationTurnsContained',
+        'visibleConversationTurnCount'
+    )) {
         if (-not $injector.Contains($contract)) {
             Add-Failure "Missing classic message-action verification contract: $contract"
         }

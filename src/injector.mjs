@@ -486,8 +486,32 @@ const verifyExpression = `(() => {
     && button.querySelector(':scope > .qq2007-message-action-icon')
     && button.querySelector(':scope > .qq2007-message-action-label')
     && button.querySelector('[data-qq2007-message-native-icon="true"]')
-    && button.closest('[data-qq2007-message-actions="true"]')
   ));
+  const decoratedMessageActionStrips = Array.from(document.querySelectorAll('[data-qq2007-message-actions="true"]'));
+  const classicMessageActionStripsScoped = decoratedMessageActionStrips.every((strip) => {
+    const actions = Array.from(strip.querySelectorAll('button[data-qq2007-message-action]'));
+    const kinds = new Set(actions.map((button) => button.dataset.qq2007MessageAction));
+    return actions.length === 4
+      && kinds.size === 4
+      && ['copy', 'like', 'dislike', 'share'].every((kind) => kinds.has(kind));
+  });
+  const threadScroller = document.querySelector('.thread-scroll-container');
+  const conversation = threadScroller?.querySelector('[data-thread-find-target="conversation"]');
+  const threadRect = threadScroller?.getBoundingClientRect();
+  const conversationRect = conversation?.getBoundingClientRect();
+  const visibleTurns = threadRect ? Array.from(threadScroller.querySelectorAll('[data-turn-key]')).filter((turn) => {
+    const rectangle = turn.getBoundingClientRect();
+    return rectangle.width > 0
+      && rectangle.height > 0
+      && rectangle.bottom > threadRect.top
+      && rectangle.top < threadRect.bottom;
+  }) : [];
+  const conversationTurnsContained = !threadRect || !conversationRect || visibleTurns.every((turn) => {
+    const rectangle = turn.getBoundingClientRect();
+    return rectangle.left >= conversationRect.left - 2
+      && rectangle.right <= conversationRect.right + 2
+      && rectangle.width <= conversationRect.width + 4;
+  });
   const pass = Boolean(
     state
     && (settingsSurface ? (settingsMenuIntact && settingsThemeApplied && settingsChromeReady) : (
@@ -518,6 +542,8 @@ const verifyExpression = `(() => {
     && authenticLevelIconsReady
     && animatedStagesReady
     && classicMessageActionsReady
+    && classicMessageActionStripsScoped
+    && conversationTurnsContained
     && mainTitleClearOfLeftRail
     ))
   );
@@ -592,6 +618,10 @@ const verifyExpression = `(() => {
       animatedStageCount: visibleRightStageImages.length,
       classicMessageActionsReady,
       classicMessageActionCount: nativeMessageActions.length,
+      classicMessageActionStripsScoped,
+      decoratedMessageActionStripCount: decoratedMessageActionStrips.length,
+      conversationTurnsContained,
+      visibleConversationTurnCount: visibleTurns.length,
       mainTitleClearOfLeftRail,
       mainTitleIconLeft: mainTitleIconRect ? Math.round(mainTitleIconRect.left) : null,
       mainSurfaceLeft: mainSurfaceRect ? Math.round(mainSurfaceRect.left) : null,

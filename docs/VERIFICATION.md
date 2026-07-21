@@ -29,6 +29,8 @@ echo $LASTEXITCODE
 - 右栏两张形象图在默认动态偏好下使用内嵌 GIF；系统开启“减少动态效果”时改用静态 PNG。
 - `mainTitleClearOfLeftRail=true`，且 `mainTitleIconLeft` 至少比 `mainSurfaceLeft` 大 6px。
 - 页面存在完成消息操作栏时，`classicMessageActionsReady=true`，原生复制/喜欢/不喜欢/继续新任务按钮均保留并套用复古图标与文字。
+- `classicMessageActionStripsScoped=true`，每个复古操作栏恰好包含四种动作，且不会标记整条虚拟会话。
+- `conversationTurnsContained=true`，当前可见的每条会话均完整位于中央会话安全区内；长命令、附件和处理中状态不得让消息侵入左右栏。
 
 ## 设置页实机验收
 

@@ -93,12 +93,29 @@ function Test-NoRuntimeArtifacts {
     foreach ($file in $forbidden) { Add-Failure "Runtime artifact must not be committed: $($file.FullName.Substring($root.Length + 1))" }
 }
 
+function Test-ApprovalOverlayProtection {
+    $runtime = Get-Content -LiteralPath (Join-Path $root 'src/skin-runtime.js') -Raw -Encoding UTF8
+    $injector = Get-Content -LiteralPath (Join-Path $root 'src/injector.mjs') -Raw -Encoding UTF8
+    foreach ($contract in @(
+        'const hasNativeApprovalSurface = () =>',
+        'if (hasNativeApprovalSurface()) return;',
+        'if (hasNativeApprovalSurface()) {',
+        'const nativeApprovalActive =',
+        'nativeActionControlsReady',
+        '&& !verified?.visualContract?.nativeApprovalActive'
+    )) {
+        if (-not $runtime.Contains($contract) -and -not $injector.Contains($contract)) {
+            Add-Failure "Missing approval-overlay protection contract: $contract"
+        }
+    }
+}
 Test-JavaScriptSyntax
 Test-PowerShellSyntax
 Test-Manifest
 Test-RequiredFiles
 Test-MarkdownLinks
 Test-NoRuntimeArtifacts
+Test-ApprovalOverlayProtection
 
 if ($failures.Count -gt 0) {
     $failures | ForEach-Object { Write-Error $_ }

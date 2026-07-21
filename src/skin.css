@@ -280,7 +280,7 @@ html.qq2009-programmer-codex aside.app-shell-left-panel [data-active="true"] {
   box-shadow: inset 0 0 0 1px #6aa6d4 !important;
 }
 
-html.qq2009-programmer-codex aside.app-shell-left-panel [data-qq2007-nav] > svg {
+html.qq2009-programmer-codex aside.app-shell-left-panel [data-qq2007-nav] [data-qq2007-native-nav-glyph="true"] {
   display: none !important;
 }
 
@@ -461,6 +461,24 @@ html.qq2009-programmer-codex main.main-surface > header.app-header-tint {
   top: 107px !important;
 }
 
+/* Codex's native “Output / Sources” tray is an in-conversation floating
+ * surface. In fullscreen it needs a reserved lane instead of covering chat
+ * text; the decorative QQ friend pane yields that lane only while the real
+ * tray is visible, then returns automatically. */
+html.qq2009-programmer-codex [data-qq2007-workspace-host="true"][data-qq2007-native-output-active="true"] #qq2007-right-panel {
+  display: none !important;
+}
+
+html.qq2009-programmer-codex main.main-surface[data-qq2007-native-output-overlay="true"] > header.app-header-tint {
+  right: 7px !important;
+}
+
+html.qq2009-programmer-codex main.main-surface[data-qq2007-native-output-overlay="true"] .thread-scroll-container [class*="max-w-(--thread-content-max-width)"] {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+  max-width: calc(100% - var(--qq2007-native-output-width, 338px)) !important;
+}
+
 html.qq2009-programmer-codex main.main-surface > header.app-header-tint button {
   color: #174d79 !important;
 }
@@ -614,19 +632,19 @@ html.qq2009-programmer-codex main.main-surface pre button {
 
 #qq2007-home-welcome {
   background: #f8fcff;
-  border: 1px solid #6fa6cd;
-  border-radius: 5px;
-  box-shadow: inset 0 0 0 1px #fff, 0 1px 3px rgb(25 81 125 / 18%);
+  border: 1px solid #4e91c4;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px #fff, 0 1px 3px rgb(25 81 125 / 22%);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  height: 108px;
-  left: 8px;
+  height: 126px;
+  left: 16px;
   overflow: hidden;
   pointer-events: none;
   position: absolute;
-  right: 8px;
-  top: -200px;
+  right: 16px;
+  top: -218px;
   z-index: 4;
 }
 
@@ -652,55 +670,215 @@ html.qq2009-programmer-codex main.main-surface pre button {
   width: 25px;
 }
 
+.qq2007-home-welcome-status {
+  align-items: center;
+  color: #3a6c25;
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 400;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.qq2007-home-welcome-status::before {
+  background: #73b938;
+  border: 1px solid #3e8618;
+  border-radius: 50%;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 85%);
+  content: '';
+  height: 8px;
+  width: 8px;
+}
+
 .qq2007-home-welcome-body {
   align-items: flex-start;
   background: #fbfdff;
   color: #142637;
   display: flex;
   flex: 1;
-  flex-direction: column;
+  flex-direction: row;
   font-family: Tahoma, "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
-  gap: 4px;
+  gap: 10px;
   justify-content: center;
-  padding: 8px 15px;
+  padding: 7px 15px 6px 18px;
 }
 
-.qq2007-home-welcome-body strong {
+.qq2007-home-welcome-copy {
+  align-self: center;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.qq2007-home-welcome-copy strong {
   font-size: 16px;
   line-height: 22px;
 }
 
-.qq2007-home-welcome-body span {
+.qq2007-home-welcome-copy span {
   color: #54708a;
   font-size: 12px;
   line-height: 17px;
 }
 
+.qq2007-home-welcome-copy em {
+  color: #7d5a22;
+  font-size: 11px;
+  font-style: normal;
+  line-height: 15px;
+}
+
+.qq2007-home-welcome-whisper {
+  align-self: center;
+  background: #fff9d9;
+  border: 1px solid #ddb66b;
+  box-shadow: inset 0 1px 0 #fff, 1px 1px 0 rgb(156 104 20 / 18%);
+  color: #68490f;
+  display: flex;
+  flex: 0 0 164px;
+  flex-direction: column;
+  font-size: 11px;
+  gap: 2px;
+  line-height: 15px;
+  margin: 0 2px;
+  padding: 6px 8px;
+  transform: rotate(-1deg);
+}
+
+.qq2007-home-welcome-whisper strong {
+  color: #9a5c06;
+  font-size: 11px;
+}
+
+.qq2007-home-welcome-bot {
+  align-self: end;
+  height: 90px;
+  margin: -2px 3px -6px 0;
+  object-fit: cover;
+  object-position: center 40%;
+  width: 108px;
+}
+
 [data-qq2007-home-suggestions="true"] {
-  transform: translateY(-68px);
+  transform: translateY(-92px);
   z-index: 5;
 }
 
 [data-qq2007-home-card="true"] {
-  background: #f9fcff !important;
-  border: 1px solid #79aad1 !important;
-  border-radius: 5px !important;
-  box-shadow: inset 0 0 0 1px #fff, 0 1px 2px rgb(26 79 121 / 16%) !important;
+  background: linear-gradient(#fff, #f6fbff 61%, #dcebfa) !important;
+  border: 1px solid #5c9ed1 !important;
+  border-radius: 2px !important;
+  box-shadow: inset 0 0 0 1px #fff, 1px 2px 0 rgb(22 94 147 / 14%) !important;
   color: #1c3143 !important;
   font-family: Tahoma, "Microsoft YaHei UI", "Microsoft YaHei", sans-serif !important;
-  min-height: 94px !important;
-  padding: 10px 12px !important;
+  min-height: 116px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  position: relative !important;
+  text-align: left !important;
+}
+
+[data-qq2007-home-card="true"]::before {
+  background-color: #e4f2fc;
+  background-image: var(--qq2007-panel-header-bg);
+  background-position: center;
+  background-size: 100% 100%;
+  border-bottom: 1px solid #73a6ce;
+  color: #1a4f7d;
+  content: 'QQ 程序员快捷任务';
+  font-size: 11px;
+  font-weight: 700;
+  left: 0;
+  letter-spacing: .15px;
+  line-height: 25px;
+  padding: 0 8px;
+  position: absolute;
+  right: 0;
+  text-shadow: 0 1px 0 #fff;
+  top: 0;
 }
 
 [data-qq2007-home-card="true"]:hover,
 [data-qq2007-home-card="true"]:focus-visible {
-  background: #e9f5ff !important;
-  border-color: #2c83bf !important;
-  box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px #9bc8e7 !important;
+  background: linear-gradient(#fffef2, #f4faff 62%, #d7ecfc) !important;
+  border-color: #176fb1 !important;
+  box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px #9cc8e7, 1px 2px 0 rgb(19 89 143 / 24%) !important;
+  color: #092d58 !important;
 }
 
-[data-qq2007-home-card="true"] svg {
-  filter: saturate(.72);
+[data-qq2007-home-card="true"] [data-qq2007-home-native-card-body="true"] {
+  visibility: hidden !important;
+}
+
+[data-qq2007-home-card="true"]::after {
+  color: #2378b5;
+  content: '›';
+  font-family: Tahoma, sans-serif;
+  font-size: 24px;
+  line-height: 24px;
+  position: absolute;
+  right: 11px;
+  text-shadow: 0 1px 0 #fff;
+  top: calc(50% + 2px);
+}
+
+.qq2007-home-card-badge {
+  align-items: center;
+  background: linear-gradient(#f8fdff, #cce7fa);
+  border: 1px solid #75a9cf;
+  box-shadow: inset 0 1px 0 #fff;
+  display: flex;
+  height: 31px;
+  justify-content: center;
+  left: 12px;
+  position: absolute;
+  top: 39px;
+  width: 31px;
+}
+
+.qq2007-home-card-badge img {
+  height: 24px;
+  object-fit: contain;
+  width: 24px;
+}
+
+.qq2007-home-card-copy {
+  bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  left: 54px;
+  position: absolute;
+  right: 28px;
+  top: 38px;
+}
+
+.qq2007-home-card-copy strong {
+  color: #123f6b;
+  font-size: 14px;
+  line-height: 19px;
+  text-shadow: 0 1px 0 #fff;
+}
+
+.qq2007-home-card-copy span {
+  color: #3c6380;
+  font-size: 11px;
+  line-height: 16px;
+}
+
+.qq2007-home-card-copy em {
+  color: #8b6a2c;
+  font-size: 10px;
+  font-style: normal;
+  line-height: 15px;
+  margin-top: auto;
+}
+
+[data-qq2007-home-card="true"][data-qq2007-home-card-kind="review"] .qq2007-home-card-badge,
+[data-qq2007-home-card="true"][data-qq2007-home-card-kind="repair"] .qq2007-home-card-badge {
+  background: linear-gradient(#fafff8, #dff2cf);
+  border-color: #84b267;
 }
 
 html.qq2009-programmer-codex .composer-surface-chrome {

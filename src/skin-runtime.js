@@ -79,6 +79,14 @@
     const hasBackToApp = Array.from(root.querySelectorAll('button, a, [role="button"], [role="link"]')).some((node) => /^(返回应用|back to app)$/i.test(normalize(node.textContent)));
     return hasSettingsSearch && hasBackToApp;
   };
+  const nativeApprovalDecisionButtons = () => Array.from(document.querySelectorAll('button')).filter((button) => (
+    !button.closest('[id^="qq2007-"]') && isVisible(button)
+  )).map((button) => normalize(button.textContent));
+  const hasNativeApprovalSurface = () => {
+    const decisions = nativeApprovalDecisionButtons();
+    return decisions.some((label) => /^(允许一次|允许|approve once|approve|allow once)$/i.test(label))
+      && decisions.some((label) => /^(拒绝|deny|reject|not now)$/i.test(label));
+  };
   const loadWeeklyQuota = () => {
     try {
       const cached = JSON.parse(sessionStorage.getItem(WEEKLY_QUOTA_KEY) || 'null');
@@ -318,12 +326,31 @@
     welcome.setAttribute('aria-label', 'Codex 2007 新建任务欢迎区');
     const header = create('div', 'qq2007-home-welcome-header');
     header.appendChild(makeImage(config.assets.penguin2007, 'Codex 企鹅'));
-    header.appendChild(create('strong', '', 'Codex 小蓝在线'));
+    header.appendChild(create('strong', '', 'QQ 程序员服务台 · Codex 小蓝'));
+    const status = create('span', 'qq2007-home-welcome-status', '在线');
+    status.setAttribute('aria-label', 'Codex 小蓝在线');
+    header.appendChild(status);
     const body = create('div', 'qq2007-home-welcome-body');
-    body.appendChild(create('strong', '', '今天想和我一起完成什么？'));
-    body.appendChild(create('span', '', '选择下方任务类型，或直接在输入框里告诉我。'));
+    const copy = create('div', 'qq2007-home-welcome-copy');
+    copy.appendChild(create('strong', '', '叮咚！需求投递成功，今天也把 Bug 安排明白。'));
+    copy.appendChild(create('span', '', '点一张任务卡开工，或把你的需求直接丢进下面的聊天框。'));
+    copy.appendChild(create('em', '', '今日心情：不写 Bug，只写解决方案。'));
+    const whisper = create('div', 'qq2007-home-welcome-whisper');
+    whisper.appendChild(create('strong', '', '小蓝悄悄话：'));
+    whisper.appendChild(create('span', '', '目标说清楚，我就能稳稳接住。'));
+    const bot = makeImage(config.assets.botStage, 'Codex 小蓝');
+    bot.className = 'qq2007-home-welcome-bot';
+    body.append(copy, whisper, bot);
     welcome.append(header, body);
     return welcome;
+  };
+
+  const homeTaskPresentation = (text) => {
+    if (/探索并理解代码/.test(text)) return { kind: 'explore', asset: config.assets.toolSites, title: '代码侦查局', detail: '先把项目的脾气摸清楚' };
+    if (/构建新功能/.test(text)) return { kind: 'build', asset: config.assets.toolNew, title: '造物研究所', detail: '新功能，马上开工' };
+    if (/审查代码/.test(text)) return { kind: 'review', asset: config.assets.toolPr, title: '代码体检中心', detail: '专治“应该能跑”' };
+    if (/修复问题/.test(text)) return { kind: 'repair', asset: config.assets.toolPlugins, title: 'Bug 急救站', detail: '红灯一亮，立刻救场' };
+    return { kind: 'task', asset: config.assets.toolNew, title: 'QQ 任务卡', detail: '点我开始安排' };
   };
 
   const decorateHomeSurface = () => {
@@ -333,7 +360,10 @@
       delete node.dataset.qq2007HomeSuggestions;
       delete node.dataset.qq2007HomePrompt;
       delete node.dataset.qq2007HomeCard;
+      delete node.dataset.qq2007HomeCardKind;
     }
+    for (const generated of main.querySelectorAll('.qq2007-home-card-badge, .qq2007-home-card-copy')) generated.remove();
+    for (const nativeBody of main.querySelectorAll('[data-qq2007-home-native-card-body]')) delete nativeBody.dataset.qq2007HomeNativeCardBody;
     const homeCardPattern = /探索并理解代码|构建新功能|审查代码|修复问题/;
     const exactCandidates = [
       ...main.querySelectorAll('section[class*="home-suggestions"], [class*="home-suggestions"]'),
@@ -390,7 +420,22 @@
         anchor.appendChild(welcome);
       }
     }
-    for (const card of suggestions.querySelectorAll(':scope button')) card.dataset.qq2007HomeCard = 'true';
+    for (const card of suggestions.querySelectorAll(':scope button')) {
+      const presentation = homeTaskPresentation(normalize(card.textContent));
+      for (const nativeBody of Array.from(card.children)) nativeBody.dataset.qq2007HomeNativeCardBody = 'true';
+      card.dataset.qq2007HomeCard = 'true';
+      card.dataset.qq2007HomeCardKind = presentation.kind;
+      const badge = create('span', 'qq2007-home-card-badge');
+      badge.setAttribute('aria-hidden', 'true');
+      badge.appendChild(makeImage(presentation.asset, ''));
+      const copy = create('span', 'qq2007-home-card-copy');
+      copy.setAttribute('aria-hidden', 'true');
+      copy.appendChild(create('strong', '', presentation.title));
+      copy.appendChild(create('span', '', presentation.detail));
+      copy.appendChild(create('em', '', '双击开始安排'));
+      card.prepend(copy);
+      card.prepend(badge);
+    }
   };
 
   const decorateMessageContent = () => {
@@ -405,6 +450,32 @@
         || 'bash';
       block.dataset.qq2007CodeLanguage = language;
     }
+  };
+
+  const syncNativeOutputOverlay = () => {
+    const main = document.querySelector('main.main-surface');
+    if (!main) return;
+    const outputOverlay = Array.from(main.querySelectorAll('div')).find((node) => {
+      if (node.closest('[id^="qq2007-"]') || !isVisible(node)) return false;
+      const classes = node.classList;
+      const text = normalize(node.textContent);
+      return classes.contains('absolute')
+        && classes.contains('right-0')
+        && /(?:输出|output)/i.test(text)
+        && /(?:来源|source)/i.test(text)
+        && node.getBoundingClientRect().width >= 220;
+    });
+    const workspace = main.closest('[data-qq2007-workspace-host="true"]');
+    if (!outputOverlay) {
+      delete main.dataset.qq2007NativeOutputOverlay;
+      main.style.removeProperty('--qq2007-native-output-width');
+      delete workspace?.dataset.qq2007NativeOutputActive;
+      return;
+    }
+    const width = Math.max(260, Math.ceil(outputOverlay.getBoundingClientRect().width + 22));
+    main.dataset.qq2007NativeOutputOverlay = 'true';
+    main.style.setProperty('--qq2007-native-output-width', `${width}px`);
+    if (workspace) workspace.dataset.qq2007NativeOutputActive = 'true';
   };
 
   const findComposer = () => document.querySelector('.composer-surface-chrome');
@@ -656,6 +727,7 @@
       return /停止|stop/i.test(label);
     });
     if (stopButton) return 'busy';
+    if (hasNativeApprovalSurface()) return 'away';
     const approval = Array.from(document.querySelectorAll('[role="dialog"], [role="alertdialog"]'))
       .find((dialog) => isVisible(dialog) && /批准|审批|确认|approval|approve/i.test(normalize(dialog.textContent)));
     if (approval) return 'away';
@@ -823,6 +895,15 @@
       const definition = definitions.find(([pattern]) => pattern.test(text));
       if (!definition) continue;
       button.dataset.qq2007Nav = definition[2];
+      // Codex keeps its own outline glyph inside a small flex slot. The QQ
+      // service image is the visual icon for this skin, so tag only that
+      // native glyph slot for removal; leave the button and its text intact.
+      for (const nativeSvg of button.querySelectorAll('svg')) {
+        const glyphSlot = nativeSvg.parentElement?.childElementCount === 1
+          ? nativeSvg.parentElement
+          : nativeSvg;
+        glyphSlot.dataset.qq2007NativeNavGlyph = 'true';
+      }
       if (!button.querySelector(':scope > .qq2007-native-nav-icon')) {
         button.insertBefore(makeImage(config.assets[definition[1]], '', 'qq2007-native-nav-icon'), button.firstChild);
       }
@@ -857,7 +938,11 @@
   };
 
   const updateDynamicContent = () => {
+    // Native approval cards update their own content while awaiting a decision.
+    // Do not touch their ancestor tree or force a layout refresh mid-interaction.
+    if (hasNativeApprovalSurface()) return;
     decorateNativeSidebar();
+    syncNativeOutputOverlay();
     const sessionTitle = readSessionTitle();
     for (const node of document.querySelectorAll('[data-qq-session-title]')) setText(node, `Codex 2007 - ${sessionTitle}`);
     for (const node of document.querySelectorAll('[data-qq-main-title]')) setText(node, sessionTitle);
@@ -912,8 +997,8 @@
 
   const removeNormalThemeArtifacts = () => {
     for (const id of ['qq2007-window-title', 'qq2007-toolbar', 'qq2007-left-header', 'qq2007-left-profile', 'qq2007-main-title', 'qq2007-right-panel', 'qq2007-composer-chrome', 'qq2007-statusbar', 'qq2007-toast', 'qq2007-left-chat-shortcut', 'qq2007-home-welcome']) byId(id)?.remove();
-    for (const node of document.querySelectorAll('.qq2007-native-nav-icon, .qq2007-folder-icon')) node.remove();
-    for (const node of document.querySelectorAll('[data-qq2007-shell-host], [data-qq2007-workspace-host], [data-qq2007-topbar-host], [data-qq2007-nav], [data-qq2007-folder-row], [data-qq2007-section-heading], [data-qq2007-native-aside-header], [data-qq2007-native-search], [data-qq2007-native-profile-footer], [data-qq2007-native-profile-host], [data-qq2007-native-profile-paint-host], [data-qq2007-native-profile-trigger], [data-qq2007-native-model-trigger], [data-qq2007-native-send-trigger], [data-qq2007-home-suggestions], [data-qq2007-home-prompt], [data-qq2007-home-card], pre[data-qq2007-code-language]')) {
+    for (const node of document.querySelectorAll('.qq2007-native-nav-icon, .qq2007-folder-icon, .qq2007-home-card-badge, .qq2007-home-card-copy')) node.remove();
+    for (const node of document.querySelectorAll('[data-qq2007-shell-host], [data-qq2007-workspace-host], [data-qq2007-topbar-host], [data-qq2007-nav], [data-qq2007-native-nav-glyph], [data-qq2007-folder-row], [data-qq2007-section-heading], [data-qq2007-native-aside-header], [data-qq2007-native-search], [data-qq2007-native-profile-footer], [data-qq2007-native-profile-host], [data-qq2007-native-profile-paint-host], [data-qq2007-native-profile-trigger], [data-qq2007-native-model-trigger], [data-qq2007-native-send-trigger], [data-qq2007-home-suggestions], [data-qq2007-home-prompt], [data-qq2007-home-card], [data-qq2007-home-native-card-body], pre[data-qq2007-code-language]')) {
       for (const attribute of Array.from(node.attributes)) {
         if (attribute.name.startsWith('data-qq2007-')) node.removeAttribute(attribute.name);
       }
@@ -1078,6 +1163,7 @@
   const reconcile = () => {
     state.reconcileQueued = false;
     if (localStorage.getItem(DISABLED_KEY) === '1') return;
+    if (hasNativeApprovalSurface()) return;
     if (isSettingsSurface()) {
       activateSettingsTheme();
       return;
@@ -1098,6 +1184,7 @@
     updateDynamicContent();
   };
   const queueReconcile = () => {
+    if (hasNativeApprovalSurface()) return;
     if (state.reconcileQueued) return;
     state.reconcileQueued = true;
     setTimer(reconcile, 100);
@@ -1113,12 +1200,13 @@
       'qq2007-right-panel', 'qq2007-composer-chrome', 'qq2007-statusbar', 'qq2007-toast',
       'qq2007-left-chat-shortcut', 'qq2007-home-welcome', STYLE_ID,
     ]) byId(id)?.remove();
-    for (const node of document.querySelectorAll('.qq2007-native-nav-icon, .qq2007-folder-icon')) node.remove();
-    for (const node of document.querySelectorAll('[data-qq2007-shell-host], [data-qq2007-workspace-host], [data-qq2007-topbar-host], [data-qq2007-nav], [data-qq2007-folder-row], [data-qq2007-section-heading], [data-qq2007-native-aside-header], [data-qq2007-native-search], [data-qq2007-native-profile-footer], [data-qq2007-native-profile-host], [data-qq2007-native-profile-paint-host], [data-qq2007-native-profile-trigger], [data-qq2007-native-model-trigger], [data-qq2007-native-send-trigger], [data-qq2007-home-suggestions], [data-qq2007-home-prompt], [data-qq2007-home-card], pre[data-qq2007-code-language]')) {
+    for (const node of document.querySelectorAll('.qq2007-native-nav-icon, .qq2007-folder-icon, .qq2007-home-card-badge, .qq2007-home-card-copy')) node.remove();
+    for (const node of document.querySelectorAll('[data-qq2007-shell-host], [data-qq2007-workspace-host], [data-qq2007-topbar-host], [data-qq2007-nav], [data-qq2007-native-nav-glyph], [data-qq2007-folder-row], [data-qq2007-section-heading], [data-qq2007-native-aside-header], [data-qq2007-native-search], [data-qq2007-native-profile-footer], [data-qq2007-native-profile-host], [data-qq2007-native-profile-paint-host], [data-qq2007-native-profile-trigger], [data-qq2007-native-model-trigger], [data-qq2007-native-send-trigger], [data-qq2007-home-suggestions], [data-qq2007-home-prompt], [data-qq2007-home-card], [data-qq2007-home-native-card-body], pre[data-qq2007-code-language]')) {
       delete node.dataset.qq2007ShellHost;
       delete node.dataset.qq2007WorkspaceHost;
       delete node.dataset.qq2007TopbarHost;
       delete node.dataset.qq2007Nav;
+      delete node.dataset.qq2007NativeNavGlyph;
       delete node.dataset.qq2007FolderRow;
       delete node.dataset.qq2007SectionHeading;
       delete node.dataset.qq2007NativeAsideHeader;
@@ -1132,6 +1220,8 @@
       delete node.dataset.qq2007HomeSuggestions;
       delete node.dataset.qq2007HomePrompt;
       delete node.dataset.qq2007HomeCard;
+      delete node.dataset.qq2007HomeCardKind;
+      delete node.dataset.qq2007HomeNativeCardBody;
       delete node.dataset.qq2007CodeLanguage;
     }
     if (restoreText) {
@@ -1183,6 +1273,10 @@
   window.addEventListener('online', updateAgentState);
   window.addEventListener('offline', updateAgentState);
   const interval = window.setInterval(() => {
+    if (hasNativeApprovalSurface()) {
+      updateAgentState();
+      return;
+    }
     updateAgentState();
     updateBalance();
     updateDynamicContent();

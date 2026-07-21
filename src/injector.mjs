@@ -300,6 +300,17 @@ const verifyExpression = `(() => {
   const nativeProfileActionReady = actionable(nativeProfileTrigger);
   const nativeModelActionReady = actionable(nativeModelTrigger);
   const nativeSendActionReady = actionable(nativeSendTrigger);
+  const approvalDecisions = Array.from(document.querySelectorAll('button')).filter((button) => {
+    if (button.closest('[id^="qq2007-"]')) return false;
+    const rect = button.getBoundingClientRect();
+    const style = getComputedStyle(button);
+    return rect.width > 0 && rect.height > 0 && style.display !== 'none' && style.visibility !== 'hidden';
+  }).map((button) => (button.textContent || '').replace(/\s+/g, ' ').trim());
+  const nativeApprovalActive = approvalDecisions.some((label) => /^(允许一次|允许|approve once|approve|allow once)$/i.test(label))
+    && approvalDecisions.some((label) => /^(拒绝|deny|reject|not now)$/i.test(label));
+  const nativeActionControlsReady = nativeApprovalActive || (
+    nativeProfileActionReady && nativeModelActionReady && nativeSendActionReady
+  );
   const sendSkinButton = document.querySelector('.qq2007-send-button');
   const sendVisualHitTarget = (() => {
     if (!(sendSkinButton instanceof HTMLElement)) return false;
@@ -351,8 +362,30 @@ const verifyExpression = `(() => {
     })
     : true;
   const wideEnoughForRightPanel = innerWidth > 1080;
+  const nativeOutputOverlayActive = Array.from(document.querySelectorAll('main.main-surface div')).some((node) => {
+    const rect = node.getBoundingClientRect();
+    const style = getComputedStyle(node);
+    const text = (node.textContent || '').replace(/\s+/g, ' ').trim();
+    return node.classList.contains('absolute')
+      && node.classList.contains('right-0')
+      && rect.width >= 220 && rect.height > 0
+      && style.display !== 'none' && style.visibility !== 'hidden'
+      && /(?:输出|output)/i.test(text)
+      && /(?:来源|source)/i.test(text);
+  });
+  const nativeNavGlyphsHidden = Array.from(document.querySelectorAll('[data-qq2007-native-nav-glyph="true"]')).every((node) => {
+    const rect = node.getBoundingClientRect();
+    const style = getComputedStyle(node);
+    return style.display === 'none' || style.visibility === 'hidden' || rect.width === 0 || rect.height === 0;
+  });
   const homeSurfaceDetected = Boolean(document.querySelector('[data-qq2007-home-suggestions="true"]'));
-  const homeWelcomeReady = !homeSurfaceDetected || Boolean(nodes.homeWelcome?.visible);
+  const homeWelcomeReady = !homeSurfaceDetected || Boolean(
+    nodes.homeWelcome?.visible
+    && document.querySelector('#qq2007-home-welcome .qq2007-home-welcome-bot')
+    && document.querySelector('#qq2007-home-welcome .qq2007-home-welcome-status')
+    && document.querySelectorAll('[data-qq2007-home-card="true"] .qq2007-home-card-badge').length >= 3
+    && document.querySelectorAll('[data-qq2007-home-card="true"] .qq2007-home-card-copy').length >= 3
+  );
   const levelIcons = Array.from(document.querySelectorAll('[data-qq-level-icons] img'));
   const authenticLevelIconsReady = !state?.qqLevel || (levelIcons.length > 0 && levelIcons.every((icon) => /^(star|moon|sun|crown)$/.test(icon.dataset.qqLevelAsset || '') && (icon.getAttribute('src') || '').startsWith('data:image/png;base64,')));
   const pass = Boolean(
@@ -368,7 +401,7 @@ const verifyExpression = `(() => {
     && nodes.mainTitle?.visible
     && nodes.composerChrome?.visible
     && nodes.statusbar?.visible
-    && (!wideEnoughForRightPanel || nodes.rightPanel?.visible)
+    && (!wideEnoughForRightPanel || nativeOutputOverlayActive || nodes.rightPanel?.visible)
     && nodes.titlebar.rect.height >= 40
     && nodes.titlebar.rect.height <= 42
     && nodes.toolbar.rect.height === 54
@@ -376,9 +409,8 @@ const verifyExpression = `(() => {
     && toolbarActions.length === 6
     && /^Codex 2007\\s*-\\s*.+/.test(titleText)
     && !nativeMenuButtonsVisible
-    && nativeProfileActionReady
-    && nativeModelActionReady
-    && nativeSendActionReady
+    && nativeNavGlyphsHidden
+    && nativeActionControlsReady
     && sendVisualHitTarget
     && homeWelcomeReady
     && document.documentElement.scrollWidth <= innerWidth + 2
@@ -413,12 +445,16 @@ const verifyExpression = `(() => {
       titleText,
       toolbarActionCount: toolbarActions.length,
       nativeMenuButtonsVisible,
+      nativeApprovalActive,
+      nativeActionControlsReady,
+      nativeNavGlyphsHidden,
       nativeProfileActionReady,
       nativeModelActionReady,
       nativeSendActionReady,
       sendVisualHitTarget,
       homeSurfaceDetected,
       homeWelcomeReady,
+      nativeOutputOverlayActive,
       settingsSurface,
       settingsMenuIntact,
       settingsThemeApplied,
@@ -585,7 +621,7 @@ async function watch(options, bootstrap) {
         else await writeJson(null, ready);
       } else {
         const verified = await active.session.evaluate(verifyExpression);
-        if (!verified?.pass || !verified?.nativeAppIntact) {
+        if ((!verified?.pass || !verified?.nativeAppIntact) && !verified?.visualContract?.nativeApprovalActive) {
           await applyUntilReady(active.session, bootstrap);
         }
       }

@@ -6,6 +6,10 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 
 ### Changed
 
+- 左侧原生导航的重复线框图标已隐藏，只保留 QQ 服务图标；原有按钮文本、路由和点击语义不变。
+- 原生“允许一次/拒绝”审批卡进入交互保护态：守护器不再因模型按钮暂时不可用而重注入皮肤，运行时也不在审批期间重绘会话层。
+- 新建任务首页升级为 QQ 程序员服务台任务卡；全屏时原生输出/来源面板会暂时让出右侧好友栏，并为会话正文预留宽度。
+
 - 设置页改为 QQ2007 原生视觉层：真实应用顶栏显示“Codex 2007 - 设置”，设置导航、搜索框和表单卡片采用复古蓝色风格。
 - 保留并验证所有原生设置服务行、服务图标、开关和下拉菜单；不再以“暂停主题”方式退回官方设置页。
 - 设置页验收契约新增 `settingsThemeApplied`、`settingsRowsDecorated` 和 `settingsChromeReady`。

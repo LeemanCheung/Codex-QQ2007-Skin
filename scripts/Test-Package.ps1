@@ -27,7 +27,11 @@ function Test-PowerShellSyntax {
     foreach ($file in Get-ChildItem -LiteralPath $root -Recurse -Filter '*.ps1' -File) {
         $tokens = $null
         $errors = $null
-        [Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref]$tokens, [ref]$errors) | Out-Null
+        # Windows PowerShell 5.1 may decode a UTF-8 file without BOM using the
+        # legacy system code page. Read UTF-8 explicitly before parsing so CI
+        # validates the same Chinese source text that Node and Git preserve.
+        $source = [IO.File]::ReadAllText($file.FullName, [Text.UTF8Encoding]::new($false))
+        [Management.Automation.Language.Parser]::ParseInput($source, $file.FullName, [ref]$tokens, [ref]$errors) | Out-Null
         foreach ($parseError in @($errors)) {
             Add-Failure "PowerShell syntax failed: $($file.FullName.Substring($root.Length + 1)): $($parseError.Message)"
         }
@@ -49,7 +53,7 @@ function Test-Manifest {
 
 function Test-RequiredFiles {
     $required = @(
-        'README.md', 'SECURITY.md', 'LICENSE.txt', 'NOTICE.txt', 'THIRD_PARTY_NOTICES.md',
+        'README.md', 'SECURITY.md', 'LICENSE', 'LICENSE.txt', 'NOTICE.txt', 'THIRD_PARTY_NOTICES.md',
         'CHANGELOG.md', 'CONTRIBUTING.md', 'SUPPORT.md', 'docs/SOURCES.md',
         'assets/codex2007-title-bg.png', 'assets/codex2007-window-controls.png',
         'assets/qq-level-star.png', 'assets/qq-level-moon.png',

@@ -15,14 +15,6 @@
 - 设置页同样采用 QQ2007 蓝色标题栏、分组侧栏和表单卡片；所有设置服务行、原生图标、开关与下拉菜单保持可用。
 - 一键恢复官方外观并关闭本机调试端口。
 
-## QQ 等级
-
-```text
-等级 = min(64, 1 + floor(4 × log2(1 + 累计Token / 1,000,000)))
-```
-
-等级值使用项目自己的对数曲线；星星/月亮/太阳/皇冠的四进制组合沿用经典 QQ 表达：1、4、16、64。该换算规则可见[腾讯新闻的历史说明](https://news.qq.com/rain/a/20221212A020BZ00)。
-
 ## 快速安装
 
 要求：Windows 10/11、官方 Windows Codex 桌面应用、Node.js 22+。
@@ -75,7 +67,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\Restore-Codex.
 
 ## 来源与独立实现
 
-视觉方向参考 [Randy Lu 发布的概念图](https://x.com/randyloop/status/2077813650564452850)。实现代码、布局逻辑和项目素材均由本项目独立编写或制作；未引用 `zhulin025/Codex-QQ-Skin`、第三方换肤引擎或修改后的 Codex 二进制。完整来源、用途和访问日期见 [docs/SOURCES.md](docs/SOURCES.md)。
+视觉方向参考 [Randy Lu 发布的概念图](https://x.com/randyloop/status/2077813650564452850)。本仓库不打包第三方换肤引擎或修改后的 Codex 二进制。完整来源、用途和访问日期见 [docs/SOURCES.md](docs/SOURCES.md)。
 
 ## 许可证
 

@@ -29,4 +29,4 @@
 
 - `codex2007-*`：为本项目制作的界面、角色和背景素材。
 - `qq-level-*`：从历史等级参考图提取的第三方经典等级图标，不属于 MIT 授权，详见 [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md)。
-- 未引用 `zhulin025/Codex-QQ-Skin`、第三方换肤引擎、原始 QQ 主题包或修改后的 Codex 二进制。
+- 未打包第三方换肤引擎、原始 QQ 主题包或修改后的 Codex 二进制。

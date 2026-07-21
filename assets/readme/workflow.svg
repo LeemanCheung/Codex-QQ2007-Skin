@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 340" role="img" aria-labelledby="title desc">
+  <title id="title">Codex 2007 本机工作流程</title>
+  <desc id="desc">从安装器校验官方 Codex，到回环 CDP、原生 DOM、视觉层、独立验证与安全恢复的六步流程。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f8fcff"/>
+      <stop offset="1" stop-color="#e4f2fc"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#eef7fd"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="340" rx="20" fill="url(#bg)"/>
+  <rect x="28" y="24" width="1144" height="292" rx="14" fill="none" stroke="#78aeda" stroke-width="2"/>
+  <text x="60" y="71" fill="#092052" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="29" font-weight="800">一次启动，只在本机完成</text>
+  <text x="60" y="103" fill="#54708a" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="19">不替换官方二进制，不修改签名、聊天数据库或 Codex 配置</text>
+
+  <g transform="translate(57 142)" font-family="Segoe UI, Microsoft YaHei, sans-serif">
+    <g>
+      <rect width="150" height="118" rx="10" fill="url(#card)" stroke="#5c9ed1"/>
+      <circle cx="28" cy="28" r="15" fill="#1768b4"/>
+      <text x="28" y="35" text-anchor="middle" fill="#fff" font-size="19" font-weight="800">1</text>
+      <text x="20" y="71" fill="#11284a" font-size="21" font-weight="700">安装器</text>
+      <text x="20" y="99" fill="#54708a" font-size="18">校验官方应用</text>
+    </g>
+    <path d="M160 59h29" stroke="#4e8dbc" stroke-width="3"/><path d="m182 52 9 7-9 7" fill="none" stroke="#4e8dbc" stroke-width="3"/>
+    <g transform="translate(199)">
+      <rect width="150" height="118" rx="10" fill="url(#card)" stroke="#5c9ed1"/>
+      <circle cx="28" cy="28" r="15" fill="#1768b4"/>
+      <text x="28" y="35" text-anchor="middle" fill="#fff" font-size="19" font-weight="800">2</text>
+      <text x="20" y="71" fill="#11284a" font-size="21" font-weight="700">回环 CDP</text>
+      <text x="20" y="99" fill="#54708a" font-size="18">仅使用回环地址</text>
+    </g>
+    <path d="M359 59h29" stroke="#4e8dbc" stroke-width="3"/><path d="m381 52 9 7-9 7" fill="none" stroke="#4e8dbc" stroke-width="3"/>
+    <g transform="translate(398)">
+      <rect width="150" height="118" rx="10" fill="url(#card)" stroke="#5c9ed1"/>
+      <circle cx="28" cy="28" r="15" fill="#1768b4"/>
+      <text x="28" y="35" text-anchor="middle" fill="#fff" font-size="19" font-weight="800">3</text>
+      <text x="20" y="71" fill="#11284a" font-size="21" font-weight="700">原生 DOM</text>
+      <text x="20" y="99" fill="#54708a" font-size="18">等待结构挂载</text>
+    </g>
+    <path d="M558 59h29" stroke="#4e8dbc" stroke-width="3"/><path d="m580 52 9 7-9 7" fill="none" stroke="#4e8dbc" stroke-width="3"/>
+    <g transform="translate(597)">
+      <rect width="150" height="118" rx="10" fill="url(#card)" stroke="#5c9ed1"/>
+      <circle cx="28" cy="28" r="15" fill="#1768b4"/>
+      <text x="28" y="35" text-anchor="middle" fill="#fff" font-size="19" font-weight="800">4</text>
+      <text x="20" y="71" fill="#11284a" font-size="21" font-weight="700">视觉层</text>
+      <text x="20" y="99" fill="#54708a" font-size="18">DOM / CSS 注入</text>
+    </g>
+    <path d="M757 59h29" stroke="#4e8dbc" stroke-width="3"/><path d="m779 52 9 7-9 7" fill="none" stroke="#4e8dbc" stroke-width="3"/>
+    <g transform="translate(796)">
+      <rect width="150" height="118" rx="10" fill="#fafff8" stroke="#84b267"/>
+      <circle cx="28" cy="28" r="15" fill="#73b938" stroke="#3e8618"/>
+      <path d="m20 28 6 6 11-13" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="20" y="71" fill="#2f5f24" font-size="21" font-weight="700">独立验收</text>
+      <text x="20" y="99" fill="#54708a" font-size="18">原生控件仍可用</text>
+    </g>
+    <path d="M956 59h29" stroke="#4e8dbc" stroke-width="3"/><path d="m978 52 9 7-9 7" fill="none" stroke="#4e8dbc" stroke-width="3"/>
+    <g transform="translate(992)">
+      <rect width="150" height="118" rx="10" fill="url(#card)" stroke="#5c9ed1"/>
+      <circle cx="28" cy="28" r="15" fill="#1768b4"/>
+      <path d="M20 29a9 9 0 1 0 3-7m-4-7v9h9" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="20" y="71" fill="#11284a" font-size="21" font-weight="700">安全恢复</text>
+      <text x="20" y="99" fill="#54708a" font-size="18">关闭端口 / 皮肤</text>
+    </g>
+  </g>
+</svg>

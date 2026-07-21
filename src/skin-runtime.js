@@ -922,7 +922,7 @@
   const clearSettingsDecorations = () => {
     byId('qq2007-settings-title')?.remove();
     document.documentElement.removeAttribute('data-qq2007-settings-surface');
-    for (const node of document.querySelectorAll('[data-qq2007-settings-host], [data-qq2007-settings-topbar], [data-qq2007-settings-sidebar], [data-qq2007-settings-main], [data-qq2007-settings-back], [data-qq2007-settings-search], [data-qq2007-settings-row], [data-qq2007-settings-heading], [data-qq2007-settings-card]')) {
+    for (const node of document.querySelectorAll('[data-qq2007-settings-host], [data-qq2007-settings-topbar], [data-qq2007-settings-sidebar], [data-qq2007-settings-navigation], [data-qq2007-settings-main], [data-qq2007-settings-back], [data-qq2007-settings-search], [data-qq2007-settings-row], [data-qq2007-settings-heading], [data-qq2007-settings-card]')) {
       for (const attribute of Array.from(node.attributes)) {
         if (attribute.name.startsWith('data-qq2007-settings-')) node.removeAttribute(attribute.name);
       }
@@ -974,6 +974,24 @@
     for (const row of rows) row.dataset.qq2007SettingsRow = 'true';
     const sidebar = commonAncestor([...rows, searchHost, back].filter(Boolean));
     if (sidebar) sidebar.dataset.qq2007SettingsSidebar = 'true';
+    // Codex keeps the category list in a smaller independently scrollable
+    // container. Mark that exact container instead of expanding the entire
+    // sidebar: it preserves the real buttons while allowing the list to use
+    // every remaining pixel below the search field.
+    const navigationCandidates = [];
+    let navigation = rows[0]?.parentElement || null;
+    while (navigation && navigation !== sidebar?.parentElement) {
+      if (rows.every((row) => navigation.contains(row))) {
+        navigationCandidates.push(navigation);
+      }
+      if (navigation === sidebar) break;
+      navigation = navigation.parentElement;
+    }
+    const settingsNavigation = navigationCandidates.find((node) => {
+      const style = getComputedStyle(node);
+      return /(?:auto|scroll)/.test(style.overflowY) || node.scrollHeight > node.clientHeight + 2;
+    }) || navigationCandidates[0];
+    if (settingsNavigation) settingsNavigation.dataset.qq2007SettingsNavigation = 'true';
     const main = findSettingsMain(root, sidebar);
     if (main) {
       main.dataset.qq2007SettingsMain = 'true';

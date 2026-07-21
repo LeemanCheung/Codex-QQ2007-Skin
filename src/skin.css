@@ -1214,9 +1214,27 @@ html.qq2009-programmer-codex [data-qq2007-settings-sidebar="true"] {
   background: #eef7fd !important;
   border-right: 1px solid #4f8ec0 !important;
   box-shadow: inset -1px 0 #fff;
+  display: flex !important;
+  flex-direction: column !important;
   flex: 0 0 var(--qq2007-left-width) !important;
+  min-height: 0 !important;
   min-width: var(--qq2007-left-width) !important;
+  overflow: hidden !important;
   width: var(--qq2007-left-width) !important;
+}
+
+/* The native settings list used to keep its own short scrollport, leaving a
+ * large empty strip below the categories.  It is now the flex-fill portion of
+ * the sidebar: all settings stay reachable, and only vertical scrolling is
+ * allowed when the window is genuinely too short. */
+html.qq2009-programmer-codex [data-qq2007-settings-navigation="true"] {
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  padding-bottom: 14px !important;
 }
 
 html.qq2009-programmer-codex [data-qq2007-settings-back="true"] {

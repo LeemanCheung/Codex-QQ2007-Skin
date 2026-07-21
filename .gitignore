@@ -1,0 +1,26 @@
+# Local runtime and diagnostics
+runtime/
+*.log
+verify*.json
+watcher-ready*.json
+state.json
+dom-*.json
+apply-*.json
+inspect-*.json
+
+# Screenshots and private references
+*-live.png
+skin-*.png
+design-comparison*.png
+reference-*.png
+
+# Local Codex data and editor files
+.codex/
+.vscode/
+.idea/
+node_modules/
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store

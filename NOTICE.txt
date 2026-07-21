@@ -1,0 +1,14 @@
+Codex QQ2007 Skin is an unofficial, independently implemented retro-inspired
+visual layer. It is not affiliated with, endorsed by, or distributed by
+Tencent, QQ, or OpenAI.
+
+No third-party theme engine, third-party skin repository code, modified Codex
+binary, or original QQ theme package is included. Project-created character,
+background, and interface artwork was produced specifically for this project.
+
+The four classic QQ level glyph files are historical third-party reference
+assets and are excluded from the MIT license. See THIRD_PARTY_NOTICES.md.
+
+QQ, Codex, OpenAI, Tencent, and related product names or marks remain the
+property of their respective owners and are used only for identification,
+compatibility, and description of visual inspiration.

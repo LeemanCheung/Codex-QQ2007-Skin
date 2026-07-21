@@ -1,0 +1,51 @@
+name: Bug report
+description: Report a reproducible theme, interaction, installation, or compatibility problem.
+title: "[Bug] "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not upload full runtime logs, session files, screenshots, account data, usage values, or absolute user paths. Use Security Advisories for vulnerabilities.
+  - type: input
+    id: codex-version
+    attributes:
+      label: Codex version
+      placeholder: 26.xxx.xxxx.x
+    validations:
+      required: true
+  - type: input
+    id: windows-node
+    attributes:
+      label: Windows and Node.js versions
+      placeholder: Windows 11; Node.js 22.x
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior and reproduction steps
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Sanitized verification fields
+      description: Include only relevant pass/nativeAppIntact/visualContract fields after removing personal data.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I used the theme shortcut and reproduced the issue after running Restore.
+          required: true
+        - label: I removed task names, paths, account data, usage, Token totals, ports, and PIDs.
+          required: true
+        - label: This is not a security vulnerability.
+          required: true

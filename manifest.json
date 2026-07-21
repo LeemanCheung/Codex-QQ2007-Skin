@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "codex-qq2007-skin",
+  "name": "Codex QQ2007 Skin",
+  "legacyInstallId": "qq2009-programmer-codex",
+  "version": "1.0.0",
+  "platform": "windows",
+  "host": "OpenAI.Codex",
+  "minimumNodeMajor": 22,
+  "entrypoints": {
+    "install": "windows/Install-QQ2009-Programmer-Codex.ps1",
+    "start": "windows/Start-QQ2009-Programmer-Codex.ps1",
+    "restore": "windows/Restore-Codex.ps1",
+    "injector": "src/injector.mjs"
+  },
+  "network": {
+    "externalRequests": false,
+    "cdpBindAddress": "127.0.0.1",
+    "preferredPort": 9349
+  },
+  "tokenLevel": {
+    "source": "local Codex session token_count events",
+    "refreshSeconds": 60,
+    "maximumLevel": 64,
+    "formula": "min(64, 1 + floor(4 * log2(1 + totalTokens / 1000000)))"
+  },
+  "verifiedCodexVersions": ["26.715.4045.0", "26.715.7063.0"],
+  "thirdPartyAssets": [
+    "assets/qq-level-star.png",
+    "assets/qq-level-moon.png",
+    "assets/qq-level-sun.png",
+    "assets/qq-level-crown.png"
+  ]
+}

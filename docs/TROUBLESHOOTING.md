@@ -20,13 +20,15 @@ Codex 可能已升级并改变 DOM。重点检查：
 
 ## 设置菜单缺失或被主题覆盖
 
-当前实现要求设置页同时出现“搜索设置”和“返回应用”语义链接后暂停主题。正常状态应为：
+当前实现要求设置页同时出现“搜索设置”和“返回应用”语义链接后，将 QQ2007 样式附着到原生设置节点。它不创建替代设置菜单，也不隐藏服务行。正常状态应为：
 
 ```text
 settingsSurface=true
 settingsMenuIntact=true
-settingsThemeSuspended=true
-classApplied=false
+settingsThemeApplied=true
+settingsRowsDecorated=true
+settingsChromeReady=true
+classApplied=true
 ```
 
 如果不满足，恢复官方外观并重新启动。新版 Codex 可能增加或移除设置入口；验收器会检查当前实际存在的服务行，而不会伪造官方已移除的菜单。

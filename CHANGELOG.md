@@ -4,6 +4,12 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 
 ## [Unreleased]
 
+### Changed
+
+- 设置页改为 QQ2007 原生视觉层：真实应用顶栏显示“Codex 2007 - 设置”，设置导航、搜索框和表单卡片采用复古蓝色风格。
+- 保留并验证所有原生设置服务行、服务图标、开关和下拉菜单；不再以“暂停主题”方式退回官方设置页。
+- 设置页验收契约新增 `settingsThemeApplied`、`settingsRowsDecorated` 和 `settingsChromeReady`。
+
 ## [1.0.0] - 2026-07-21
 
 ### Added

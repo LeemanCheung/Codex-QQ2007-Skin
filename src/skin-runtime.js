@@ -57,6 +57,14 @@
     image.draggable = false;
     return image;
   };
+  const makeSettingsTitle = () => {
+    const title = create('div', 'qq2007-settings-title');
+    title.id = 'qq2007-settings-title';
+    title.setAttribute('aria-hidden', 'true');
+    title.appendChild(makeImage(config.assets.penguin2007, '', 'qq2007-settings-title-icon'));
+    title.appendChild(create('span', '', 'Codex 2007 - 设置'));
+    return title;
+  };
   const isVisible = (element) => {
     if (!(element instanceof Element)) return false;
     const rectangle = element.getBoundingClientRect();
@@ -902,7 +910,7 @@
     return topbar ? { root, workspace, topbar, aside, main } : null;
   };
 
-  const suspendThemeForSettings = () => {
+  const removeNormalThemeArtifacts = () => {
     for (const id of ['qq2007-window-title', 'qq2007-toolbar', 'qq2007-left-header', 'qq2007-left-profile', 'qq2007-main-title', 'qq2007-right-panel', 'qq2007-composer-chrome', 'qq2007-statusbar', 'qq2007-toast', 'qq2007-left-chat-shortcut', 'qq2007-home-welcome']) byId(id)?.remove();
     for (const node of document.querySelectorAll('.qq2007-native-nav-icon, .qq2007-folder-icon')) node.remove();
     for (const node of document.querySelectorAll('[data-qq2007-shell-host], [data-qq2007-workspace-host], [data-qq2007-topbar-host], [data-qq2007-nav], [data-qq2007-folder-row], [data-qq2007-section-heading], [data-qq2007-native-aside-header], [data-qq2007-native-search], [data-qq2007-native-profile-footer], [data-qq2007-native-profile-host], [data-qq2007-native-profile-paint-host], [data-qq2007-native-profile-trigger], [data-qq2007-native-model-trigger], [data-qq2007-native-send-trigger], [data-qq2007-home-suggestions], [data-qq2007-home-prompt], [data-qq2007-home-card], pre[data-qq2007-code-language]')) {
@@ -910,9 +918,88 @@
         if (attribute.name.startsWith('data-qq2007-')) node.removeAttribute(attribute.name);
       }
     }
-    state.settingsPaused = true;
-    document.documentElement.classList.remove('qq2009-programmer-codex');
+  };
+  const clearSettingsDecorations = () => {
+    byId('qq2007-settings-title')?.remove();
+    document.documentElement.removeAttribute('data-qq2007-settings-surface');
+    for (const node of document.querySelectorAll('[data-qq2007-settings-host], [data-qq2007-settings-topbar], [data-qq2007-settings-sidebar], [data-qq2007-settings-main], [data-qq2007-settings-back], [data-qq2007-settings-search], [data-qq2007-settings-row], [data-qq2007-settings-heading], [data-qq2007-settings-card]')) {
+      for (const attribute of Array.from(node.attributes)) {
+        if (attribute.name.startsWith('data-qq2007-settings-')) node.removeAttribute(attribute.name);
+      }
+    }
+  };
+  const commonAncestor = (nodes) => {
+    if (!nodes.length) return null;
+    let candidate = nodes[0].parentElement;
+    while (candidate && !nodes.every((node) => candidate.contains(node))) candidate = candidate.parentElement;
+    return candidate;
+  };
+  const findSettingsMain = (root, sidebar) => {
+    const heading = Array.from(root.querySelectorAll('h1, h2')).find(isVisible);
+    const direct = heading?.closest('main, [role="main"]');
+    if (direct) return direct;
+    let current = sidebar;
+    while (current?.parentElement && current.parentElement !== root) {
+      const peer = Array.from(current.parentElement.children).find((node) => node !== current && node.contains(heading));
+      if (peer) return peer;
+      current = current.parentElement;
+    }
+    return heading?.parentElement || null;
+  };
+  const decorateSettingsSurface = () => {
+    const root = document.getElementById('root');
+    if (!root) return;
+    if (state.settingsPaused) clearSettingsDecorations();
+    root.dataset.qq2007SettingsHost = 'true';
     document.documentElement.dataset.qq2007SettingsSurface = 'true';
+    const topbar = Array.from(root.querySelectorAll('header, div')).find((node) => {
+      const rectangle = node.getBoundingClientRect();
+      return isVisible(node)
+        && rectangle.y <= 2
+        && rectangle.width >= window.innerWidth * 0.9
+        && (node.classList.contains('group/application-menu-top-bar') || node.tagName === 'HEADER');
+    });
+    if (topbar) {
+      topbar.dataset.qq2007SettingsTopbar = 'true';
+      let title = byId('qq2007-settings-title');
+      if (!title) title = makeSettingsTitle();
+      if (title.parentElement !== topbar) topbar.appendChild(title);
+    }
+    const search = Array.from(root.querySelectorAll('input, textarea, [contenteditable="true"]')).find((node) => /搜索设置|search settings/i.test(`${node.getAttribute('placeholder') || ''} ${node.getAttribute('aria-label') || ''}`));
+    const searchHost = search?.closest('form, div') || search?.parentElement;
+    if (searchHost) searchHost.dataset.qq2007SettingsSearch = 'true';
+    const back = Array.from(root.querySelectorAll('button, a, [role="button"], [role="link"]')).find((node) => /^(返回应用|back to app)$/i.test(normalize(node.textContent)));
+    if (back) back.dataset.qq2007SettingsBack = 'true';
+    const rows = Array.from(root.querySelectorAll('[data-settings-panel-slug]'));
+    for (const row of rows) row.dataset.qq2007SettingsRow = 'true';
+    const sidebar = commonAncestor([...rows, searchHost, back].filter(Boolean));
+    if (sidebar) sidebar.dataset.qq2007SettingsSidebar = 'true';
+    const main = findSettingsMain(root, sidebar);
+    if (main) {
+      main.dataset.qq2007SettingsMain = 'true';
+      for (const heading of main.querySelectorAll('h1, h2, h3')) heading.dataset.qq2007SettingsHeading = 'true';
+      const mainRect = main.getBoundingClientRect();
+      const cards = new Set();
+      for (const control of main.querySelectorAll('[role="switch"], button[aria-haspopup="menu"], button[aria-expanded]')) {
+        let candidate = control.parentElement;
+        while (candidate && candidate !== main) {
+          const rectangle = candidate.getBoundingClientRect();
+          const controlCount = candidate.querySelectorAll('[role="switch"], button[aria-haspopup="menu"], button[aria-expanded]').length;
+          if (rectangle.width >= Math.max(360, mainRect.width * 0.55) && rectangle.height >= 76 && rectangle.height <= 460 && controlCount >= 2) {
+            cards.add(candidate);
+            break;
+          }
+          candidate = candidate.parentElement;
+        }
+      }
+      for (const card of cards) card.dataset.qq2007SettingsCard = 'true';
+    }
+  };
+  const activateSettingsTheme = () => {
+    if (!state.settingsPaused) removeNormalThemeArtifacts();
+    document.documentElement.classList.add('qq2009-programmer-codex');
+    decorateSettingsSurface();
+    state.settingsPaused = true;
   };
   const ensureLayout = () => {
     const layout = findLayout();
@@ -974,13 +1061,13 @@
     state.reconcileQueued = false;
     if (localStorage.getItem(DISABLED_KEY) === '1') return;
     if (isSettingsSurface()) {
-      suspendThemeForSettings();
+      activateSettingsTheme();
       return;
     }
     if (state.settingsPaused) {
       state.settingsPaused = false;
+      clearSettingsDecorations();
       document.documentElement.classList.add('qq2009-programmer-codex');
-      delete document.documentElement.dataset.qq2007SettingsSurface;
     }
     ensureLayout();
     decorateHomeSurface();
@@ -1002,6 +1089,7 @@
     state.observer?.disconnect();
     state.observer = null;
     clearManagedTimers();
+    clearSettingsDecorations();
     for (const id of [
       'qq2007-window-title', 'qq2007-toolbar', 'qq2007-left-header', 'qq2007-left-profile', 'qq2007-main-title',
       'qq2007-right-panel', 'qq2007-composer-chrome', 'qq2007-statusbar', 'qq2007-toast',
@@ -1054,8 +1142,8 @@
   installStyle();
   setAssetVariables();
   const settingsAtStartup = isSettingsSurface();
-  if (settingsAtStartup) suspendThemeForSettings();
-  else document.documentElement.classList.add('qq2009-programmer-codex');
+  document.documentElement.classList.add('qq2009-programmer-codex');
+  if (settingsAtStartup) activateSettingsTheme();
   const initialLayoutReady = settingsAtStartup || ensureLayout();
   if (!settingsAtStartup) {
     renameTextNodes();

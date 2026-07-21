@@ -12,7 +12,7 @@
 - “Q币余额”只显示个人资料中“剩余用量 → 1 周”的真实剩余百分比，读取不到时显示 `--`。
 - Agent 状态映射为在线、忙碌、离开；任务完成提示映射为“好友上线”。
 - 累计本地 Token 用量映射为 1–64 级 QQ 等级，每 60 秒刷新。
-- 设置页自动撤出主题，避免隐藏官方菜单；验收器会检查当前设置服务行都具有原生图标。
+- 设置页同样采用 QQ2007 蓝色标题栏、分组侧栏和表单卡片；所有设置服务行、原生图标、开关与下拉菜单保持可用。
 - 一键恢复官方外观并关闭本机调试端口。
 
 ## QQ 等级
@@ -62,7 +62,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\Restore-Codex.
 - `verify.json` 中 `pass=true`、`nativeAppIntact=true`；
 - 六个工具栏入口、个人资料、模型选择和发送控件可用；
 - 无水平溢出，标题栏、输入区和状态栏尺寸满足契约；
-- 设置页主题完全撤出，当前服务行均可见且包含原生图标。
+- 设置页 QQ2007 视觉层已附着到原生节点，当前服务行、原生图标、开关和下拉菜单均可见可用。
 
 验证方法见 [docs/VERIFICATION.md](docs/VERIFICATION.md)，版本说明见 [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md)。运行态 JSON 和截图可能包含任务名称、用量等个人信息，因此不会提交到仓库。
 

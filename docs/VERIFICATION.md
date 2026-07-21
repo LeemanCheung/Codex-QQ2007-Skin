@@ -30,8 +30,8 @@ echo $LASTEXITCODE
 ## 设置页实机验收
 
 1. 点击左下角个人资料并进入设置。
-2. 确认 QQ 标题栏、工具栏、右侧栏和状态栏撤出。
-3. 确认设置服务行可见且每行具有对应的原生 SVG/图片。
+2. 确认原生设置页已套用 QQ2007 蓝色窗框、左侧分组、搜索框与表单卡片，而没有插入替代菜单。
+3. 确认设置服务行可见且每行保留对应的原生 SVG/图片、开关、下拉菜单和点击行为。
 4. 运行 `injector.mjs verify` 指向本次实际端口。
 
 接受字段：
@@ -39,10 +39,12 @@ echo $LASTEXITCODE
 ```text
 pass=true
 nativeAppIntact=true
-classApplied=false
+classApplied=true
 settingsSurface=true
 settingsMenuIntact=true
-settingsThemeSuspended=true
+settingsThemeApplied=true
+settingsRowsDecorated=true
+settingsChromeReady=true
 settingsServiceIconsReady=true
 ```
 

@@ -313,9 +313,19 @@ const verifyExpression = `(() => {
     && composer
     && composer.querySelector('textarea, [contenteditable="true"]')
   );
-  const settingsThemeSuspended = !document.documentElement.classList.contains('qq2009-programmer-codex')
-    && !document.querySelector('#qq2007-window-title, #qq2007-toolbar, #qq2007-right-panel, #qq2007-statusbar');
-  const nativeAppIntact = settingsSurface ? (settingsMenuIntact && settingsThemeSuspended) : nativeShellIntact;
+  const settingsRowsDecorated = settingsRows.length > 0
+    && settingsRows.every((row) => row.dataset.qq2007SettingsRow === 'true');
+  const settingsThemeApplied = document.documentElement.classList.contains('qq2009-programmer-codex')
+    && document.documentElement.dataset.qq2007SettingsSurface === 'true'
+    && root?.dataset.qq2007SettingsHost === 'true'
+    && settingsRowsDecorated;
+  const settingsChromeReady = !settingsSurface || Boolean(
+    document.querySelector('#qq2007-settings-title')
+    && document.querySelector('[data-qq2007-settings-topbar="true"]')
+    && document.querySelector('[data-qq2007-settings-sidebar="true"]')
+    && document.querySelector('[data-qq2007-settings-main="true"]')
+  );
+  const nativeAppIntact = settingsSurface ? (settingsMenuIntact && settingsThemeApplied && settingsChromeReady) : nativeShellIntact;
   const nodes = {
     titlebar: describe('qq2007-window-title'),
     toolbar: describe('qq2007-toolbar'),
@@ -347,7 +357,7 @@ const verifyExpression = `(() => {
   const authenticLevelIconsReady = !state?.qqLevel || (levelIcons.length > 0 && levelIcons.every((icon) => /^(star|moon|sun|crown)$/.test(icon.dataset.qqLevelAsset || '') && (icon.getAttribute('src') || '').startsWith('data:image/png;base64,')));
   const pass = Boolean(
     state
-    && (settingsSurface ? (settingsMenuIntact && settingsThemeSuspended) : (
+    && (settingsSurface ? (settingsMenuIntact && settingsThemeApplied && settingsChromeReady) : (
       document.documentElement.classList.contains('qq2009-programmer-codex')
     && state
     && nodes.titlebar?.visible
@@ -411,7 +421,9 @@ const verifyExpression = `(() => {
       homeWelcomeReady,
       settingsSurface,
       settingsMenuIntact,
-      settingsThemeSuspended,
+      settingsThemeApplied,
+      settingsRowsDecorated,
+      settingsChromeReady,
       settingsServiceRowCount: settingsRows.length,
       settingsServiceIconsReady: settingsRowsHaveIcons,
       authenticLevelIconsReady,

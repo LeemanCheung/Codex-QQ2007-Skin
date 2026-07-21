@@ -1157,6 +1157,192 @@ html.qq2009-programmer-codex [data-qq2007-renamed="true"] {
   color: inherit;
 }
 
+/* Settings keeps its native controls and service rows; this layer only gives
+ * the real surface the same QQ2007 window, pane and form treatment. */
+html.qq2009-programmer-codex[data-qq2007-settings-surface="true"],
+html.qq2009-programmer-codex[data-qq2007-settings-surface="true"] body {
+  background: #b8d9f3 !important;
+}
+
+html.qq2009-programmer-codex [data-qq2007-settings-host="true"] {
+  background: #c7e1f4 !important;
+  color: #132b48 !important;
+}
+
+html.qq2009-programmer-codex [data-qq2007-settings-topbar="true"] {
+  background-color: #0b62b5 !important;
+  background-image: var(--qq2007-title-bg) !important;
+  background-position: center !important;
+  background-size: 100% 100% !important;
+  border-bottom: 1px solid #06417e !important;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 48%), inset 0 -1px 0 rgb(0 38 90 / 62%) !important;
+  color: #f9fdff !important;
+  min-height: 42px !important;
+  position: relative !important;
+}
+
+html.qq2009-programmer-codex [data-qq2007-settings-topbar="true"] button,
+html.qq2009-programmer-codex [data-qq2007-settings-topbar="true"] a {
+  color: #f9fdff !important;
+  text-shadow: 0 1px 1px #06346c;
+}
+
+#qq2007-settings-title {
+  align-items: center;
+  color: #fff;
+  display: flex;
+  font-size: 16px;
+  font-weight: 700;
+  gap: 5px;
+  left: 50%;
+  pointer-events: none;
+  position: absolute;
+  text-shadow: 0 1px 2px #083c79;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  z-index: 2;
+}
+
+.qq2007-settings-title-icon {
+  height: 25px;
+  object-fit: contain;
+  width: 25px;
+}
+
+html.qq2009-programmer-codex [data-qq2007-settings-sidebar="true"] {
+  background: #eef7fd !important;
+  border-right: 1px solid #4f8ec0 !important;
+  box-shadow: inset -1px 0 #fff;
+  flex: 0 0 var(--qq2007-left-width) !important;
+  min-width: var(--qq2007-left-width) !important;
+  width: var(--qq2007-left-width) !important;
+}
+
+html.qq2009-programmer-codex [data-qq2007-settings-back="true"] {
+  align-items: center !important;
+  background: linear-gradient(#fafdff, #d5ecfd) !important;
+  border: 1px solid #77a9d1 !important;
+  border-radius: 2px !important;
+  box-shadow: inset 0 1px 0 #fff;
+  color: #0a4275 !important;
+  display: inline-flex !important;
+  font-weight: 700 !important;
+  margin: 7px 8px 5px !important;
+  min-height: 30px !important;
+  padding: 3px 9px !important;
+}
+
+html.qq2009-programmer-codex [data-qq2007-settings-back="true"]:hover,
+html.qq2009-programmer-codex [data-qq2007-settings-back="true"]:focus-visible {
+  background: #fffbdc !important;
+  border-color: #ce9d36 !important;
+  outline: 1px dotted #9a6f18 !important;
+  outline-offset: 1px;
+}
+
+html.qq2009-programmer-codex [data-qq2007-settings-search="true"] {
+  background: #f8fcff !important;
+  border: 1px solid #77a9d1 !important;
+  border-radius: 2px !important;
+  box-shadow: inset 0 1px 2px rgb(11 70 123 / 16%), 0 1px 0 #fff;
+  margin: 3px 8px 8px !important;
+}
+
+html.qq2009-programmer-codex [data-qq2007-settings-search="true"] input,
+html.qq2009-programmer-codex [data-qq2007-settings-search="true"] textarea {
+  color: #193f62 !important;
+}
+
+html.qq2009-programmer-codex [data-qq2007-settings-row="true"] {
+  align-items: center !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 2px !important;
+  color: #183b61 !important;
+  font-size: 14px !important;
+  margin: 0 5px !important;
+  min-height: 31px !important;
+  padding-inline: 8px !important;
+}
+
+html.qq2009-programmer-codex [data-qq2007-settings-row="true"] svg,
+html.qq2009-programmer-codex [data-qq2007-settings-row="true"] img {
+  color: #1c5d99 !important;
+  filter: saturate(1.15) contrast(1.05);
+}
+
+html.qq2009-programmer-codex [data-qq2007-settings-row="true"]:hover,
+html.qq2009-programmer-codex [data-qq2007-settings-row="true"]:focus-visible {
+  background: #d9edfb !important;
+  border-color: #78abd3 !important;
+  box-shadow: inset 0 1px 0 #fff;
+  outline: 0 !important;
+}
+
+html.qq2009-programmer-codex [data-qq2007-settings-row="true"][aria-current="page"],
+html.qq2009-programmer-codex [data-qq2007-settings-row="true"][data-state="active"],
+html.qq2009-programmer-codex [data-qq2007-settings-row="true"].bg-token-list-hover-background {
+  background: #b8dcf5 !important;
+  border-color: #4e9bd1 !important;
+  box-shadow: inset 0 1px 0 #eaf8ff, inset 0 -1px 0 rgb(57 132 188 / 30%);
+  color: #082d5b !important;
+  font-weight: 700 !important;
+}
+
+html.qq2009-programmer-codex [data-qq2007-settings-main="true"] {
+  background: #f7fcff !important;
+  border: 1px solid #4f8ec0 !important;
+  box-shadow: inset 0 0 0 1px #fff;
+  color: #122c48 !important;
+}
+
+html.qq2009-programmer-codex [data-qq2007-settings-heading="true"] {
+  color: #0a376b !important;
+  font-family: Tahoma, "Microsoft YaHei UI", "Microsoft YaHei", sans-serif !important;
+  font-weight: 700 !important;
+  text-shadow: 0 1px 0 #fff;
+}
+
+html.qq2009-programmer-codex [data-qq2007-settings-card="true"] {
+  background: linear-gradient(135deg, #fff, #f0f8fe 70%, #e7f3fc) !important;
+  border: 1px solid #78a8d0 !important;
+  border-radius: 4px !important;
+  box-shadow: inset 0 1px 0 #fff, 0 1px 2px rgb(15 77 126 / 18%) !important;
+}
+
+html.qq2009-programmer-codex [data-qq2007-settings-main="true"] [role="switch"] {
+  border-color: #3f86bd !important;
+  box-shadow: inset 0 1px 1px rgb(7 61 108 / 25%);
+}
+
+html.qq2009-programmer-codex [data-qq2007-settings-main="true"] button[aria-haspopup="menu"],
+html.qq2009-programmer-codex [data-qq2007-settings-main="true"] select {
+  background: linear-gradient(#fff, #e9f5fd) !important;
+  border-color: #76a9d1 !important;
+  border-radius: 2px !important;
+  box-shadow: inset 0 1px 0 #fff;
+  color: #153d64 !important;
+}
+
+html.qq2009-programmer-codex [data-qq2007-settings-main="true"] :is(input, textarea):not([type="checkbox"]):not([type="radio"]) {
+  background: #fff !important;
+  border-color: #77a9d1 !important;
+  border-radius: 2px !important;
+  box-shadow: inset 0 1px 2px rgb(15 77 126 / 14%);
+  color: #173a5e !important;
+}
+
+html.qq2009-programmer-codex [data-qq2007-settings-main="true"] ::-webkit-scrollbar {
+  width: 12px;
+}
+
+html.qq2009-programmer-codex [data-qq2007-settings-main="true"] ::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #bfdff3, #6fa8d0, #b7def3);
+  border: 1px solid #4f8ec0;
+  border-radius: 2px;
+}
+
 @media (max-width: 1080px) {
   #qq2007-right-panel {
     display: none;

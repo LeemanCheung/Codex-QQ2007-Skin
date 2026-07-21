@@ -2,7 +2,7 @@
 
 ## 日常启动与退出
 
-- 从“QQ2009 程序员版 Codex”快捷方式进入皮肤版。
+- 从“Codex 2007”快捷方式进入皮肤版。
 - 从官方 Codex 图标进入时保持官方外观。
 - 使用“恢复原版 Codex”关闭主题、守护进程和 CDP 端口。
 
@@ -45,4 +45,4 @@
 
 ## 运行态文件
 
-本机诊断位于 `%LOCALAPPDATA%\QQ2009ProgrammerCodex\runtime`。这些文件可能包含版本、任务标题、用量、端口和 PID，不应直接发布或附到公开 Issue；请按 [SUPPORT.md](../SUPPORT.md) 脱敏。
+本机诊断位于 `%LOCALAPPDATA%\Codex2007\runtime`。这些文件可能包含版本、任务标题、用量、端口和 PID，不应直接发布或附到公开 Issue；请按 [SUPPORT.md](../SUPPORT.md) 脱敏。

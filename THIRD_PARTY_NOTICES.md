@@ -19,4 +19,4 @@ The numeric composition rule is documented by Tencent-hosted historical coverage
 
 ## Project-created assets
 
-Other `codex2007-*` image files were created specifically for this independent implementation and are covered by the repository license unless otherwise stated.
+Other `codex2007-*` image files and `assets/qq-retro-stage.png` were created specifically for this independent implementation and are covered by the repository license unless otherwise stated. `qq-retro-stage.png` is an original penguin illustration and does not include a QQ logo or copied Tencent artwork. The `codex2007-bot-typing-sprites.png` and `qq-retro-wave-sprites.png` keyframe sheets were generated from those project-created character references. The animated `codex2007-bot-stage.gif` and `qq-retro-stage.gif` files are deterministic derivatives of the keyframe sheets.

@@ -13,7 +13,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\Test-Package.p
 从独立 PowerShell 窗口运行启动脚本。它会关闭当前 Codex 后重新启动，因此不要在正在执行验证的同一 Codex 任务里运行。
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\Start-QQ2009-Programmer-Codex.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\Start-Codex-2007.ps1
 echo $LASTEXITCODE
 ```
 
@@ -26,6 +26,9 @@ echo $LASTEXITCODE
 - 发送可见区域命中原生按钮；
 - 标题栏 41px、工具栏 54px、状态栏 32px；
 - 无水平溢出，经典等级图标为内嵌 PNG。
+- 右栏两张形象图在默认动态偏好下使用内嵌 GIF；系统开启“减少动态效果”时改用静态 PNG。
+- `mainTitleClearOfLeftRail=true`，且 `mainTitleIconLeft` 至少比 `mainSurfaceLeft` 大 6px。
+- 页面存在完成消息操作栏时，`classicMessageActionsReady=true`，原生复制/喜欢/不喜欢/继续新任务按钮均保留并套用复古图标与文字。
 
 ## 设置页实机验收
 
@@ -45,8 +48,14 @@ settingsMenuIntact=true
 settingsThemeApplied=true
 settingsRowsDecorated=true
 settingsChromeReady=true
+settingsSidebarFillsPane=true
+settingsNavigationFillsPane=true
+settingsNavigationContentReady=true
+settingsRowsSized=true
 settingsServiceIconsReady=true
 ```
+
+`settingsSidebarRect.bottom` 应与视口高度一致（允许 2px 渲染误差），避免内部纵向容器被误设为 300px 高的侧栏。
 
 ## 视觉检查
 

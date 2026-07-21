@@ -1,4 +1,4 @@
-# Codex QQ2007 Skin
+# Codex 2007
 
 面向 Windows Codex 桌面应用的非官方 QQ2007 怀旧视觉层。项目以一张公开概念图为灵感，在不修改 Codex 安装包、应用签名、聊天数据库或用户配置的前提下，将原生界面映射为经典蓝色标题栏、工具栏、好友面板和状态栏。
 
@@ -22,15 +22,15 @@
 ```powershell
 git clone https://github.com/LeemanCheung/Codex-QQ2007-Skin.git
 cd Codex-QQ2007-Skin
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\Install-QQ2009-Programmer-Codex.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\Install-Codex-2007.ps1
 ```
 
-安装完成后使用桌面或开始菜单中的“QQ2009 程序员版 Codex”快捷方式启动。该名称是早期安装器的兼容标识，实际视觉基准为 Codex 2007。直接启动官方 Codex 不会应用皮肤。
+安装完成后使用桌面或开始菜单中的“Codex 2007”快捷方式启动。直接启动官方 Codex 不会应用皮肤。
 
 只安装、不立即重启：
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\Install-QQ2009-Programmer-Codex.ps1 -NoLaunch
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\Install-Codex-2007.ps1 -NoLaunch
 ```
 
 恢复官方外观：

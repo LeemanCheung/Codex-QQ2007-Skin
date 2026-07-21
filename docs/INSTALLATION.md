@@ -17,16 +17,16 @@
 ## 安装
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\Install-QQ2009-Programmer-Codex.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\Install-Codex-2007.ps1
 ```
 
 安装器会把运行必需文件复制到：
 
 ```text
-%LOCALAPPDATA%\QQ2009ProgrammerCodex\packages\1.0.0
+%LOCALAPPDATA%\Codex2007\packages\1.0.0
 ```
 
-并在桌面、开始菜单创建“QQ2009 程序员版 Codex”和“恢复原版 Codex”。内部目录和快捷方式名称保留早期兼容标识，实际视觉基准为 Codex 2007。
+并在桌面、开始菜单创建“Codex 2007”和“恢复原版 Codex”。产品名称、安装目录、脚本入口与界面标题均使用 Codex 2007 命名。
 
 安装器随后会：
 
@@ -40,7 +40,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\Install-QQ2009
 若不希望安装后立即重启 Codex：
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\Install-QQ2009-Programmer-Codex.ps1 -NoLaunch
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\Install-Codex-2007.ps1 -NoLaunch
 ```
 
 ## 启动
@@ -48,13 +48,13 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\Install-QQ2009
 以后从主题快捷方式启动，或运行：
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\Start-QQ2009-Programmer-Codex.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\Start-Codex-2007.ps1
 ```
 
 如首选端口被占用，可指定另一个首选端口；脚本仍会验证实际监听者和回环地址：
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\Start-QQ2009-Programmer-Codex.ps1 -PreferredPort 9350
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\Start-Codex-2007.ps1 -PreferredPort 9350
 ```
 
 ## 更新

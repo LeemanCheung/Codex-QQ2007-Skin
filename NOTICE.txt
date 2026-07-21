@@ -1,4 +1,4 @@
-Codex QQ2007 Skin is an unofficial, independently implemented retro-inspired
+Codex 2007 is an unofficial, independently implemented retro-inspired
 visual layer. It is not affiliated with, endorsed by, or distributed by
 Tencent, QQ, or OpenAI.
 

@@ -21,8 +21,8 @@ flowchart LR
 
 ### `windows/`
 
-- `Install-QQ2009-Programmer-Codex.ps1`：复制白名单文件、创建快捷方式并可选择启动。
-- `Start-QQ2009-Programmer-Codex.ps1`：验证官方包、启动回环 CDP、等待 DOM、拉起 watcher 并执行验收。
+- `Install-Codex-2007.ps1`：复制白名单文件、创建快捷方式并可选择启动。
+- `Start-Codex-2007.ps1`：验证官方包、启动回环 CDP、等待 DOM、拉起 watcher 并执行验收。
 - `Restore-Codex.ps1`：安全停止主题相关进程、清理已校验 Junction、恢复官方启动。
 - `Common.ps1`：路径包含关系、进程身份、端口、包发现、状态读写等公共安全逻辑。
 

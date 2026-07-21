@@ -203,7 +203,9 @@ async function buildBootstrap(assetRoot, tokenStats) {
     toolPullRequests: 'codex2007-tool-pr.png',
     toolChat: 'codex2007-tool-chat.png',
     botStage: 'codex2007-bot-stage.png',
-    friendStage: 'codex2007-friend-stage.png',
+    botStageAnimated: 'codex2007-bot-stage.gif',
+    friendStage: 'qq-retro-stage.png',
+    friendStageAnimated: 'qq-retro-stage.gif',
     statusIcons: 'codex2007-status-icons.png',
     shield: 'codex2007-shield.png',
     signal: 'codex2007-signal.png',
@@ -224,7 +226,7 @@ async function buildBootstrap(assetRoot, tokenStats) {
     levelCrown: 'qq-level-crown.png',
   };
   const assets = Object.fromEntries(await Promise.all(Object.entries(assetFiles).map(async ([key, file]) => (
-    [key, await dataUrl(path.join(assetRoot, file), 'image/png')]
+    [key, await dataUrl(path.join(assetRoot, file), file.endsWith('.gif') ? 'image/gif' : 'image/png')]
   ))));
 
   const config = {
@@ -236,19 +238,19 @@ async function buildBootstrap(assetRoot, tokenStats) {
   };
   const configLiteral = JSON.stringify(config).replaceAll('<', '\\u003c');
   return `(() => {
-    window.__QQ2009_PROGRAMMER_CODEX_CONFIG__ = ${configLiteral};
+    window.__CODEX_2007_CONFIG__ = ${configLiteral};
     return (${runtime});
   })()`;
 }
 
 const removeExpression = `(() => {
-  localStorage.setItem('qq2009-programmer-codex-disabled', '1');
-  const state = window.__QQ2009_PROGRAMMER_CODEX_STATE__;
+  localStorage.setItem('codex-2007-disabled', '1');
+  const state = window.__CODEX_2007_STATE__;
   if (state && typeof state.cleanup === 'function') state.cleanup({ restoreText: true });
-  delete window.__QQ2009_PROGRAMMER_CODEX_CONFIG__;
+  delete window.__CODEX_2007_CONFIG__;
   return {
-    pass: !document.documentElement.classList.contains('qq2009-programmer-codex'),
-    disabled: localStorage.getItem('qq2009-programmer-codex-disabled') === '1',
+    pass: !document.documentElement.classList.contains('codex-2007'),
+    disabled: localStorage.getItem('codex-2007-disabled') === '1',
   };
 })()`;
 
@@ -268,18 +270,23 @@ const verifyExpression = `(() => {
       },
     };
   };
-  const state = window.__QQ2009_PROGRAMMER_CODEX_STATE__;
+  const state = window.__CODEX_2007_STATE__;
   const composer = document.querySelector('.composer-surface-chrome');
   const nativeProfileTrigger = document.querySelector('[data-qq2007-native-profile-trigger="true"]');
   const nativeModelTrigger = document.querySelector('[data-qq2007-native-model-trigger="true"]');
   const nativeSendTrigger = document.querySelector('[data-qq2007-native-send-trigger="true"]');
   const root = document.getElementById('root');
-  const settingsSurface = Boolean(root && Array.from(root.querySelectorAll('input, textarea, [contenteditable="true"]')).some((node) => /搜索设置|search settings/i.test((node.getAttribute('placeholder') || '') + ' ' + (node.getAttribute('aria-label') || ''))) && Array.from(root.querySelectorAll('button, a, [role="button"], [role="link"]')).some((node) => /^(返回应用|back to app)$/i.test((node.textContent || '').replace(/\s+/g, ' ').trim())));
+  const settingsSurface = Boolean(root && Array.from(root.querySelectorAll('input, textarea, [contenteditable="true"]')).some((node) => /搜索设置|search settings/i.test((node.getAttribute('placeholder') || '') + ' ' + (node.getAttribute('aria-label') || ''))));
   const settingsServiceLabels = ['插件', '浏览器', '电脑操控', '钩子', '连接', 'Git', '环境', '工作树', '已归档任务'];
   const settingsRows = Array.from(root?.querySelectorAll('[data-settings-panel-slug]') || []);
+  const settingsRowRects = settingsRows.map((row) => row.getBoundingClientRect());
+  const settingsRowsSized = !settingsSurface || Boolean(
+    settingsRows.length >= settingsServiceLabels.length
+    && settingsRowRects.every((rect) => rect.width >= 120 && rect.height >= 24)
+  );
   const settingsRowsHaveIcons = settingsRows.length >= settingsServiceLabels.length
     && settingsRows.every((row) => row.querySelector('svg, img'));
-  const settingsMenuIntact = !settingsSurface || (settingsRowsHaveIcons && settingsServiceLabels.every((label) => {
+  const settingsMenuIntact = !settingsSurface || (settingsRowsSized && settingsRowsHaveIcons && settingsServiceLabels.every((label) => {
     const row = Array.from(root.querySelectorAll('button, a, [role="button"]')).find((node) => (
       (node.textContent || '').replace(/\s+/g, ' ').trim() === label
       && !node.closest('#qq2007-toolbar, #qq2007-right-panel, #qq2007-statusbar')
@@ -326,15 +333,49 @@ const verifyExpression = `(() => {
   );
   const settingsRowsDecorated = settingsRows.length > 0
     && settingsRows.every((row) => row.dataset.qq2007SettingsRow === 'true');
-  const settingsThemeApplied = document.documentElement.classList.contains('qq2009-programmer-codex')
+  const settingsThemeApplied = document.documentElement.classList.contains('codex-2007')
     && document.documentElement.dataset.qq2007SettingsSurface === 'true'
     && root?.dataset.qq2007SettingsHost === 'true'
     && settingsRowsDecorated;
+  const settingsSidebar = document.querySelector('[data-qq2007-settings-sidebar="true"]');
+  const settingsSidebarRect = settingsSidebar?.getBoundingClientRect();
+  const settingsNavigation = document.querySelector('[data-qq2007-settings-navigation="true"]');
+  const settingsNavigationRect = settingsNavigation?.getBoundingClientRect();
+  const settingsVisibleRowCount = settingsNavigationRect ? settingsRows.filter((row) => {
+    const rect = row.getBoundingClientRect();
+    const style = getComputedStyle(row);
+    return rect.width > 0 && rect.height >= 24
+      && style.display !== 'none' && style.visibility !== 'hidden'
+      && rect.bottom > settingsNavigationRect.top
+      && rect.top < settingsNavigationRect.bottom;
+  }).length : 0;
+  const settingsNavigationContentReady = !settingsSurface || Boolean(
+    settingsNavigation
+    && settingsRows.length >= settingsServiceLabels.length
+    && settingsRows.every((row) => settingsNavigation.contains(row))
+    && settingsVisibleRowCount >= Math.min(3, settingsRows.length)
+  );
+  const settingsSidebarFillsPane = !settingsSurface || Boolean(
+    settingsSidebar?.matches('aside.app-shell-left-panel')
+    && settingsSidebarRect
+    && settingsSidebarRect.height >= innerHeight * 0.75
+    && settingsSidebarRect.bottom >= innerHeight - 2
+  );
+  const settingsNavigationFillsPane = !settingsSurface || Boolean(
+    settingsNavigationRect
+    && settingsSidebarRect
+    && settingsNavigationRect.height >= Math.max(120, settingsSidebarRect.height * 0.45)
+    && settingsNavigationRect.bottom >= settingsSidebarRect.bottom - 18
+  );
   const settingsChromeReady = !settingsSurface || Boolean(
     document.querySelector('#qq2007-settings-title')
     && document.querySelector('[data-qq2007-settings-topbar="true"]')
     && document.querySelector('[data-qq2007-settings-sidebar="true"]')
     && document.querySelector('[data-qq2007-settings-main="true"]')
+    && settingsSidebarFillsPane
+    && settingsNavigationFillsPane
+    && settingsRowsSized
+    && settingsNavigationContentReady
   );
   const nativeAppIntact = settingsSurface ? (settingsMenuIntact && settingsThemeApplied && settingsChromeReady) : nativeShellIntact;
   const nodes = {
@@ -350,6 +391,19 @@ const verifyExpression = `(() => {
     toast: describe('qq2007-toast'),
     homeWelcome: describe('qq2007-home-welcome'),
   };
+  const reducedMotionActive = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
+  const rightStageImages = Array.from(document.querySelectorAll('#qq2007-right-panel [data-qq2007-motion-stage]'));
+  const visibleRightStageImages = rightStageImages.filter((image) => getComputedStyle(image).display !== 'none');
+  const expectedStageMime = reducedMotionActive ? 'data:image/png;base64,' : 'data:image/gif;base64,';
+  const expectedStageKind = reducedMotionActive ? 'static' : 'animated';
+  const animatedStagesReady = settingsSurface || Boolean(
+    rightStageImages.length === 4
+    && visibleRightStageImages.length === 2
+    && visibleRightStageImages.every((image) => (
+      (image.currentSrc || image.src || '').startsWith(expectedStageMime)
+      && image.dataset.qq2007MotionStage === expectedStageKind
+    ))
+  );
   const toolbarActions = Array.from(document.querySelectorAll('#qq2007-toolbar [data-native-action]'));
   const titleText = document.querySelector('[data-qq-session-title]')?.textContent?.trim() || '';
   const shellTopbar = document.querySelector('[data-qq2007-topbar-host="true"]')
@@ -362,16 +416,45 @@ const verifyExpression = `(() => {
     })
     : true;
   const wideEnoughForRightPanel = innerWidth > 1080;
-  const nativeOutputOverlayActive = Array.from(document.querySelectorAll('main.main-surface div')).some((node) => {
+  const isViewportVisible = (node) => {
     const rect = node.getBoundingClientRect();
     const style = getComputedStyle(node);
-    const text = (node.textContent || '').replace(/\s+/g, ' ').trim();
+    return rect.width > 0 && rect.height > 0
+      && rect.right > 0 && rect.bottom > 0
+      && rect.left < innerWidth && rect.top < innerHeight
+      && style.display !== 'none' && style.visibility !== 'hidden';
+  };
+  const isNativeTrayExpanded = (card) => {
+    const motionShell = card.closest('.origin-top-right');
+    if (!motionShell) return false;
+    const transform = getComputedStyle(motionShell).transform;
+    if (!transform || transform === 'none') return true;
+    try {
+      const matrix = new DOMMatrixReadOnly(transform);
+      return Math.abs(matrix.m41) <= 2
+        && Math.abs(matrix.m42) <= 2
+        && matrix.a >= 0.98
+        && matrix.d >= 0.98;
+    } catch {
+      return false;
+    }
+  };
+  const nativeOutputOverlayActive = Array.from(document.querySelectorAll('main.main-surface div')).some((node) => {
+    const rect = node.getBoundingClientRect();
+    const visibleTrayCards = Array.from(node.querySelectorAll('.bg-token-dropdown-background')).filter((card) => (
+      card.getBoundingClientRect().width >= 200
+      && isViewportVisible(card)
+      && isNativeTrayExpanded(card)
+    ));
+    const isNativeInformationTray = visibleTrayCards.some((card) => {
+      const cardText = (card.textContent || '').replace(/\s+/g, ' ').trim();
+      return /(?:输出|output|来源|source|环境信息|environment(?:\s+information)?)/i.test(cardText);
+    });
     return node.classList.contains('absolute')
       && node.classList.contains('right-0')
       && rect.width >= 220 && rect.height > 0
-      && style.display !== 'none' && style.visibility !== 'hidden'
-      && /(?:输出|output)/i.test(text)
-      && /(?:来源|source)/i.test(text);
+      && isViewportVisible(node)
+      && isNativeInformationTray;
   });
   const nativeNavGlyphsHidden = Array.from(document.querySelectorAll('[data-qq2007-native-nav-glyph="true"]')).every((node) => {
     const rect = node.getBoundingClientRect();
@@ -388,10 +471,27 @@ const verifyExpression = `(() => {
   );
   const levelIcons = Array.from(document.querySelectorAll('[data-qq-level-icons] img'));
   const authenticLevelIconsReady = !state?.qqLevel || (levelIcons.length > 0 && levelIcons.every((icon) => /^(star|moon|sun|crown)$/.test(icon.dataset.qqLevelAsset || '') && (icon.getAttribute('src') || '').startsWith('data:image/png;base64,')));
+  const mainSurfaceRect = document.querySelector('main.main-surface')?.getBoundingClientRect();
+  const mainTitleIconRect = document.querySelector('#qq2007-main-title img')?.getBoundingClientRect();
+  const mainTitleClearOfLeftRail = settingsSurface || Boolean(
+    mainSurfaceRect
+    && mainTitleIconRect
+    && mainTitleIconRect.left >= mainSurfaceRect.left + 6
+  );
+  const nativeMessageActions = Array.from(document.querySelectorAll('main.main-surface button[aria-label]')).filter((button) => (
+    /^(?:复制|复制消息|copy|copy message|喜欢|不喜欢|like|dislike|从这里继续新任务|continue(?: from here)?(?: in a)? new task|fork|share|分享)$/i.test((button.getAttribute('aria-label') || '').trim())
+  ));
+  const classicMessageActionsReady = nativeMessageActions.length === 0 || nativeMessageActions.every((button) => Boolean(
+    button.dataset.qq2007MessageAction
+    && button.querySelector(':scope > .qq2007-message-action-icon')
+    && button.querySelector(':scope > .qq2007-message-action-label')
+    && button.querySelector('[data-qq2007-message-native-icon="true"]')
+    && button.closest('[data-qq2007-message-actions="true"]')
+  ));
   const pass = Boolean(
     state
     && (settingsSurface ? (settingsMenuIntact && settingsThemeApplied && settingsChromeReady) : (
-      document.documentElement.classList.contains('qq2009-programmer-codex')
+      document.documentElement.classList.contains('codex-2007')
     && state
     && nodes.titlebar?.visible
     && nodes.toolbar?.visible
@@ -416,6 +516,9 @@ const verifyExpression = `(() => {
     && document.documentElement.scrollWidth <= innerWidth + 2
     && nativeAppIntact
     && authenticLevelIconsReady
+    && animatedStagesReady
+    && classicMessageActionsReady
+    && mainTitleClearOfLeftRail
     ))
   );
   return {
@@ -423,8 +526,8 @@ const verifyExpression = `(() => {
     version: state?.version ?? null,
     location: location.href,
     viewport: { width: innerWidth, height: innerHeight, dpr: devicePixelRatio },
-    disabled: localStorage.getItem('qq2009-programmer-codex-disabled') === '1',
-    classApplied: document.documentElement.classList.contains('qq2009-programmer-codex'),
+    disabled: localStorage.getItem('codex-2007-disabled') === '1',
+    classApplied: document.documentElement.classList.contains('codex-2007'),
     agentState: state?.lastAgentState ?? null,
     tokenStats: state?.tokenStats ? {
       available: Boolean(state.tokenStats.available),
@@ -460,10 +563,38 @@ const verifyExpression = `(() => {
       settingsThemeApplied,
       settingsRowsDecorated,
       settingsChromeReady,
+      settingsSidebarFillsPane,
+      settingsNavigationFillsPane,
+      settingsNavigationContentReady,
+      settingsRowsSized,
+      settingsRowCount: settingsRows.length,
+      settingsVisibleRowCount,
+      settingsSidebarRect: settingsSidebarRect ? {
+        x: Math.round(settingsSidebarRect.x),
+        y: Math.round(settingsSidebarRect.y),
+        width: Math.round(settingsSidebarRect.width),
+        height: Math.round(settingsSidebarRect.height),
+        bottom: Math.round(settingsSidebarRect.bottom),
+      } : null,
+      settingsNavigationRect: settingsNavigationRect ? {
+        x: Math.round(settingsNavigationRect.x),
+        y: Math.round(settingsNavigationRect.y),
+        width: Math.round(settingsNavigationRect.width),
+        height: Math.round(settingsNavigationRect.height),
+        bottom: Math.round(settingsNavigationRect.bottom),
+      } : null,
       settingsServiceRowCount: settingsRows.length,
       settingsServiceIconsReady: settingsRowsHaveIcons,
       authenticLevelIconsReady,
       levelIconCount: levelIcons.length,
+      reducedMotionActive,
+      animatedStagesReady,
+      animatedStageCount: visibleRightStageImages.length,
+      classicMessageActionsReady,
+      classicMessageActionCount: nativeMessageActions.length,
+      mainTitleClearOfLeftRail,
+      mainTitleIconLeft: mainTitleIconRect ? Math.round(mainTitleIconRect.left) : null,
+      mainSurfaceLeft: mainSurfaceRect ? Math.round(mainSurfaceRect.left) : null,
     },
     nodes,
     nativeAppIntact,
@@ -521,12 +652,19 @@ async function connect(port) {
   return { target, session };
 }
 
-async function applyUntilReady(session, bootstrap, timeoutMs = 60000) {
+async function applyUntilReady(session, bootstrap, timeoutMs = 60000, { preserveExistingSettings = false } = {}) {
   const startedAt = Date.now();
   let attempts = 0;
   let lastApplied = null;
   let lastVerified = null;
   let reapplyBootstrap = true;
+  if (preserveExistingSettings) {
+    lastVerified = await session.evaluate(verifyExpression);
+    if (lastVerified?.visualContract?.settingsSurface && lastVerified?.version) {
+      lastApplied = { pass: true, preservedSettingsSurface: true };
+      reapplyBootstrap = false;
+    }
+  }
   while (Date.now() - startedAt < timeoutMs) {
     attempts += 1;
     if (reapplyBootstrap) lastApplied = await session.evaluate(bootstrap);
@@ -553,7 +691,7 @@ async function applyUntilReady(session, bootstrap, timeoutMs = 60000) {
 async function enableAndApply(session, bootstrap, enable) {
   await session.send('Page.addScriptToEvaluateOnNewDocument', { source: bootstrap });
   if (enable) {
-    await session.evaluate(`localStorage.removeItem('qq2009-programmer-codex-disabled'); true`);
+    await session.evaluate(`localStorage.removeItem('codex-2007-disabled'); true`);
   }
   return applyUntilReady(session, bootstrap);
 }
@@ -622,14 +760,26 @@ async function watch(options, bootstrap) {
       } else {
         const verified = await active.session.evaluate(verifyExpression);
         if ((!verified?.pass || !verified?.nativeAppIntact) && !verified?.visualContract?.nativeApprovalActive) {
-          await applyUntilReady(active.session, bootstrap);
+          if (verified?.visualContract?.settingsSurface && verified?.version) {
+            // Never run the full bootstrap over a live settings surface. React
+            // may still be hydrating its category list, and teardown here can
+            // erase the menu or navigate back to the previous task.
+            await active.session.evaluate(`(() => {
+              const state = window.__CODEX_2007_STATE__;
+              return state && typeof state.refreshSettingsTheme === 'function'
+                ? state.refreshSettingsTheme()
+                : false;
+            })()`);
+          } else {
+            await applyUntilReady(active.session, bootstrap);
+          }
         }
       }
       if (active && Date.now() >= nextTokenRefresh) {
         const tokenStats = await collectTokenStats();
         const tokenStatsLiteral = JSON.stringify(tokenStats).replaceAll('<', '\\u003c');
         await active.session.evaluate(`(() => {
-          const state = window.__QQ2009_PROGRAMMER_CODEX_STATE__;
+          const state = window.__CODEX_2007_STATE__;
           return state && typeof state.updateTokenStats === 'function'
             ? state.updateTokenStats(${tokenStatsLiteral})
             : false;
@@ -641,7 +791,7 @@ async function watch(options, bootstrap) {
       active = null;
       const message = error instanceof Error ? error.message : String(error);
       if (message !== lastError) {
-        process.stderr.write(`[qq2009-watch] ${message}\n`);
+        process.stderr.write(`[codex-2007-watch] ${message}\n`);
         lastError = message;
       }
     }

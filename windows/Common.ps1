@@ -3,9 +3,9 @@
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = 'Stop'
 
-$script:QQProductName = 'QQ2009 Programmer Codex'
+$script:QQProductName = 'Codex 2007'
 $script:QQVersion = '1.0.0'
-$script:QQStateRoot = Join-Path $env:LOCALAPPDATA 'QQ2009ProgrammerCodex'
+$script:QQStateRoot = Join-Path $env:LOCALAPPDATA 'Codex2007'
 $script:QQRuntimeRoot = Join-Path $script:QQStateRoot 'runtime'
 $script:QQStatePath = Join-Path $script:QQRuntimeRoot 'state.json'
 
@@ -72,12 +72,12 @@ function Get-QQCodexInstall {
 }
 
 function Initialize-QQPackageLauncher {
-    if ('QQ2009ProgrammerCodex.PackageLauncher' -as [type]) { return }
+    if ('Codex2007.PackageLauncher' -as [type]) { return }
     Add-Type -TypeDefinition @'
 using System;
 using System.Runtime.InteropServices;
 
-namespace QQ2009ProgrammerCodex {
+namespace Codex2007 {
   [Flags]
   internal enum ActivateOptions : uint { None = 0 }
 
@@ -130,7 +130,7 @@ function Start-QQCodexPackage {
     $argumentLine = ($Arguments | ForEach-Object {
         if ($_ -match '\s') { '"' + $_ + '"' } else { $_ }
     }) -join ' '
-    $processId = [QQ2009ProgrammerCodex.PackageLauncher]::Launch($Codex.AppUserModelId, $argumentLine)
+    $processId = [Codex2007.PackageLauncher]::Launch($Codex.AppUserModelId, $argumentLine)
     if ($processId -le 0) { throw 'Windows 未返回有效的 Codex 进程号。' }
     return [int]$processId
 }

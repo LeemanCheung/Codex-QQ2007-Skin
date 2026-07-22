@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "codex-2007",
   "name": "Codex 2007",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "platform": "windows",
   "host": "OpenAI.Codex",
   "minimumNodeMajor": 22,
@@ -23,7 +23,7 @@
     "maximumLevel": 64,
     "formula": "min(64, 1 + floor(4 * log2(1 + totalTokens / 1000000)))"
   },
-  "verifiedCodexVersions": ["26.715.4045.0", "26.715.7063.0"],
+  "verifiedCodexVersions": ["26.715.4045.0", "26.715.7063.0", "26.715.8383.0"],
   "thirdPartyAssets": [
     "assets/qq-level-star.png",
     "assets/qq-level-moon.png",

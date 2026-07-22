@@ -24,10 +24,19 @@ echo $LASTEXITCODE
 - 六个工具栏入口；
 - 个人资料、模型和发送原生动作就绪；
 - 发送可见区域命中原生按钮；
+- `retroComposerControlsReady=true`：附件、访问权限和模型选择均保留原生动作并使用 QQ2007 控件外观；`nativeContextIndicatorReady=true`，真实上下文用量图标与百分比位于模型按钮左侧，二者至少间隔 4px；
+- `retroScrollbarReady=true` 且 `retroScrollbarTargetCount` 至少为 1：可滚动区域使用 17px XP Luna/QQ2007 滚动条，滑块、轨道和四向箭头按钮样式完整；
+- `nativeNewTaskBackdropCleared=true`：左侧“新建任务”文字按钮及其原生复合动作容器不再保留 Codex 圆角底板，右侧加号仍可点击；
 - 标题栏 41px、工具栏 54px、状态栏 32px；
+- `nativeWindowControlsReady=true`、`duplicateWindowControlGlyphsAbsent=true`，且 `nativeWindowControlsSafeInset` 至少为 96px；页面不得绘制第二套窗口按钮或复古底板；
 - 无水平溢出，经典等级图标为内嵌 PNG。
 - 右栏两张形象图在默认动态偏好下使用内嵌 GIF；系统开启“减少动态效果”时改用静态 PNG。
+- 右下角企鹅中性帧宽高比应位于 0.82–0.92；六帧脚底与嘴部横向中心偏差均不得超过 1px，避免挥手时上下或左右跳动；好友舞台素材必须为 390×320，使用 `object-fit: cover` 满幅显示和 `image-rendering: auto` 平滑缩小，既保留轻微像素阶梯感，也不得出现两侧留白或低分辨率放大模糊。
 - `mainTitleClearOfLeftRail=true`，且 `mainTitleIconLeft` 至少比 `mainSurfaceLeft` 大 6px。
+- `mainTitleAlignedWithConversationFrame=true`、`mainTitleRounded=true`，且标题框与 `conversationFrameLeft/Right` 外边界的误差不超过 1.5px。
+- `mainTitleBottomAlignedWithConversation=true`，且 `mainTitleFrameBottom` 与 `conversationViewportTop` 的误差不超过 1.5px，标题下方不得出现第二条水平边或空白带。
+- 首页快捷任务存在时，`homeCardIconsReady=true` 且至少三张卡片图标均为已完成解码、`naturalWidth > 0` 的内嵌 PNG；不得出现浏览器破图占位。
+- 首页快捷任务存在时，`homeWelcomeAlignedWithSuggestions=true`，且 `homeWelcomeSuggestionGap` 应位于 4–12px；欢迎卡不得依赖固定负偏移与快捷任务区分离。
 - 页面存在完成消息操作栏时，`classicMessageActionsReady=true`，原生复制/喜欢/不喜欢/继续新任务按钮均保留并套用复古图标与文字。
 - `classicMessageActionStripsScoped=true`，每个复古操作栏恰好包含四种动作，且不会标记整条虚拟会话。
 - `conversationTurnsContained=true`，当前可见的每条会话均完整位于中央会话安全区内；长命令、附件和处理中状态不得让消息侵入左右栏。

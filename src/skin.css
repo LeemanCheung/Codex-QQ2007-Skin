@@ -45,11 +45,11 @@ html.codex-2007 [data-qq2007-topbar-host="true"] > :not(#qq2007-window-title) {
 
 #qq2007-window-title {
   align-items: center;
+  box-sizing: border-box;
   color: #fff;
   display: flex;
   inset: 0;
-  justify-content: space-between;
-  padding: 0 5px 0 8px;
+  padding: 0 calc(var(--spacing-token-safe-header-right, 137px) + 8px) 0 8px;
   pointer-events: none;
   position: absolute;
   text-shadow: 0 1px 2px #083c79;
@@ -77,12 +77,6 @@ html.codex-2007 [data-qq2007-topbar-host="true"] > :not(#qq2007-window-title) {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.qq2007-window-controls {
-  height: 36px;
-  object-fit: fill;
-  width: 113px;
 }
 
 #qq2007-toolbar {
@@ -284,6 +278,29 @@ html.codex-2007 aside.app-shell-left-panel [data-qq2007-nav] [data-qq2007-native
   display: none !important;
 }
 
+/* Codex groups “New task” and its trailing plus action inside a native rounded
+ * row. Remove both native paint layers, then paint one QQ2007 hover row so it
+ * behaves like the other service buttons without sacrificing either action. */
+html.codex-2007 aside.app-shell-left-panel [data-qq2007-native-nav-paint-host="new-task"] {
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+html.codex-2007 aside.app-shell-left-panel [data-qq2007-native-nav-paint-host="new-task"] > [data-qq2007-nav="new-task"],
+html.codex-2007 aside.app-shell-left-panel [data-qq2007-native-nav-paint-host="new-task"] > [data-qq2007-nav="new-task"]:hover,
+html.codex-2007 aside.app-shell-left-panel [data-qq2007-native-nav-paint-host="new-task"] > [data-qq2007-nav="new-task"]:focus-visible {
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+
+html.codex-2007 aside.app-shell-left-panel [data-qq2007-native-nav-paint-host="new-task"]:hover,
+html.codex-2007 aside.app-shell-left-panel [data-qq2007-native-nav-paint-host="new-task"]:focus-within {
+  background: #d7edfc !important;
+  box-shadow: inset 0 0 0 1px #8dc1e8 !important;
+}
+
 .qq2007-native-nav-icon {
   height: 20px !important;
   margin-right: 4px;
@@ -441,7 +458,7 @@ html.codex-2007 aside.app-shell-left-panel * {
 html.codex-2007 main.main-surface {
   background: #fbfdff !important;
   border: 1px solid #4e8dbc;
-  border-radius: 4px 4px 0 0;
+  border-radius: 4px 4px 0 0 !important;
   box-shadow: inset 0 0 0 1px #fff;
   min-width: 420px !important;
   overflow: hidden;
@@ -452,13 +469,17 @@ html.codex-2007 main.main-surface > header.app-header-tint {
   background-image: var(--qq2007-panel-header-bg) !important;
   background-position: center !important;
   background-size: 100% 100% !important;
-  border-bottom: 1px solid #72a5cd !important;
+  border: 1px solid #72a5cd !important;
+  border-radius: 4px !important;
   box-shadow: inset 0 1px 0 #fff !important;
+  box-sizing: border-box !important;
   color: #132b4c !important;
-  height: 36px !important;
-  min-height: 36px !important;
-  right: calc(var(--qq2007-right-width) + 14px) !important;
-  top: 107px !important;
+  height: 46px !important;
+  left: var(--qq2007-main-title-frame-left, auto) !important;
+  min-height: 46px !important;
+  overflow: hidden !important;
+  right: var(--qq2007-main-title-frame-right, calc(var(--qq2007-right-width) + 14px)) !important;
+  top: var(--qq2007-main-title-frame-top, 107px) !important;
 }
 
 /* Codex's native “Output / Sources” and “Environment information” trays are
@@ -466,10 +487,6 @@ html.codex-2007 main.main-surface > header.app-header-tint {
  * pane yields only while a tray's native open animation is fully expanded. */
 html.codex-2007 [data-qq2007-workspace-host="true"][data-qq2007-native-output-active="true"] #qq2007-right-panel {
   display: none !important;
-}
-
-html.codex-2007 main.main-surface[data-qq2007-native-output-overlay="true"] > header.app-header-tint {
-  right: 7px !important;
 }
 
 html.codex-2007 main.main-surface[data-qq2007-native-output-overlay="true"] .thread-scroll-container [class*="max-w-(--thread-content-max-width)"] {
@@ -493,8 +510,9 @@ html.codex-2007 main.main-surface > header.app-header-tint > :not(#qq2007-main-t
   gap: 6px;
   height: 100%;
   min-width: 0;
-  padding: 0 8px 0 var(--qq2007-main-title-safe-inset, 26px);
+  padding: 0 8px;
   pointer-events: none;
+  width: 100%;
 }
 
 #qq2007-main-title img {
@@ -643,7 +661,7 @@ html.codex-2007 main.main-surface pre button {
   pointer-events: none;
   position: absolute;
   right: 16px;
-  top: -218px;
+  top: var(--qq2007-home-welcome-top, -80px);
   z-index: 4;
 }
 
@@ -1028,19 +1046,134 @@ html.codex-2007 .composer-surface-chrome [contenteditable="true"] {
 }
 
 .qq2007-model-button {
-  background: #f4f9fd;
-  border: 1px solid transparent;
-  color: #2a4d69;
+  align-items: center;
+  background: linear-gradient(180deg, #fafdff 0%, #e7f4fd 48%, #cfe8f8 49%, #eaf6fd 100%);
+  border: 1px solid #659dcc;
+  border-radius: 3px;
+  box-shadow: inset 1px 1px 0 rgb(255 255 255 / 92%), inset -1px -1px 0 rgb(83 142 188 / 28%);
+  color: #173d61;
   cursor: pointer;
+  display: flex;
   font-size: 11px;
+  gap: 5px;
   height: 29px;
   flex: 0 0 160px;
   max-width: 160px;
   overflow: hidden;
-  padding: 0 8px;
+  padding: 0 6px;
   pointer-events: none;
-  text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.qq2007-model-icon {
+  height: 18px;
+  image-rendering: auto;
+  object-fit: contain;
+  width: 18px;
+}
+
+.qq2007-model-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+}
+
+.qq2007-model-caret {
+  border-left: 1px solid #9bc1df;
+  height: 17px;
+  position: relative;
+  width: 15px;
+}
+
+.qq2007-model-caret::after {
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid #245f91;
+  content: '';
+  left: 5px;
+  position: absolute;
+  top: 7px;
+}
+
+html.codex-2007 .composer-surface-chrome [data-qq2007-native-attach-trigger="true"],
+html.codex-2007 .composer-surface-chrome [data-qq2007-native-access-trigger="true"] {
+  background: linear-gradient(180deg, #fbfdff 0%, #e8f5fd 48%, #d3eafa 49%, #edf8fe 100%) !important;
+  border: 1px solid #74a8d0 !important;
+  border-radius: 3px !important;
+  box-shadow: inset 1px 1px 0 rgb(255 255 255 / 95%), inset -1px -1px 0 rgb(86 143 184 / 24%) !important;
+  color: #17466d !important;
+  gap: 4px !important;
+  height: 29px !important;
+}
+
+html.codex-2007 .composer-surface-chrome [data-qq2007-native-attach-trigger="true"] {
+  font-size: 0 !important;
+  padding: 0 !important;
+  width: 30px !important;
+}
+
+html.codex-2007 .composer-surface-chrome [data-qq2007-native-attach-trigger="true"] svg,
+html.codex-2007 .composer-surface-chrome [data-qq2007-native-access-trigger="true"] svg {
+  display: none !important;
+}
+
+html.codex-2007 .composer-surface-chrome [data-qq2007-native-attach-trigger="true"]::before,
+html.codex-2007 .composer-surface-chrome [data-qq2007-native-access-trigger="true"]::before {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  content: '';
+  display: block;
+  flex: 0 0 18px;
+  height: 18px;
+  width: 18px;
+}
+
+html.codex-2007 .composer-surface-chrome [data-qq2007-native-attach-trigger="true"]::before {
+  background-image: var(--qq2007-composer-attach-bg);
+  margin: 0 auto;
+}
+
+html.codex-2007 .composer-surface-chrome [data-qq2007-native-access-trigger="true"]::before {
+  background-image: var(--qq2007-shield-bg);
+}
+
+html.codex-2007 .composer-surface-chrome [data-qq2007-native-attach-trigger="true"]:hover,
+html.codex-2007 .composer-surface-chrome [data-qq2007-native-access-trigger="true"]:hover,
+html.codex-2007 .composer-surface-chrome [data-qq2007-native-attach-trigger="true"]:focus-visible,
+html.codex-2007 .composer-surface-chrome [data-qq2007-native-access-trigger="true"]:focus-visible {
+  background: linear-gradient(180deg, #fffef4 0%, #fff3bd 48%, #f7d978 49%, #fff1ad 100%) !important;
+  border-color: #c58c25 !important;
+  outline: 0 !important;
+}
+
+html.codex-2007 .composer-surface-chrome [data-qq2007-native-context-indicator="true"] {
+  align-items: center !important;
+  background: linear-gradient(180deg, #f8fcff 0%, #e2f2fc 48%, #cae4f6 49%, #edf8fe 100%) !important;
+  border: 1px solid #75a8cf !important;
+  border-radius: 3px !important;
+  bottom: 7px !important;
+  box-shadow: inset 1px 1px 0 rgb(255 255 255 / 94%) !important;
+  box-sizing: border-box !important;
+  color: #174b74 !important;
+  display: inline-flex !important;
+  font: 11px Tahoma, "Microsoft YaHei UI", sans-serif !important;
+  gap: 4px !important;
+  height: 29px !important;
+  justify-content: center !important;
+  padding: 0 6px !important;
+  pointer-events: auto !important;
+  position: absolute !important;
+  right: 286px !important;
+  top: auto !important;
+  width: 56px !important;
+  z-index: 45 !important;
+}
+
+html.codex-2007 .composer-surface-chrome [data-qq2007-native-context-indicator="true"]::after {
+  content: attr(data-qq2007-context-value);
 }
 
 html.codex-2007 .composer-surface-chrome [data-qq2007-native-model-trigger="true"] {
@@ -1170,6 +1303,12 @@ html.codex-2007 .composer-surface-chrome [data-qq2007-native-send-trigger="true"
   width: 100%;
 }
 
+.qq2007-friend-stage > .qq2007-motion-stage > img {
+  image-rendering: auto;
+  object-fit: cover;
+  object-position: center;
+}
+
 .qq2007-motion-stage > .qq2007-motion-stage-static {
   display: none;
 }
@@ -1280,6 +1419,7 @@ html.codex-2007 .composer-surface-chrome [data-qq2007-native-send-trigger="true"
 }
 
 .qq2007-friend-stage {
+  background: #e7f5ff;
   flex: 1 1 auto;
   min-height: 150px;
   overflow: hidden;
@@ -1635,13 +1775,122 @@ html.codex-2007 [data-qq2007-settings-main="true"] ::-webkit-scrollbar-thumb {
   border-radius: 2px;
 }
 
+/* Windows XP Luna / QQ2007 scrollbars: a complete control with arrow buttons,
+ * a pale blue recessed shaft and a glossy plastic thumb. Keep this block after
+ * the settings rules so every Codex scroll surface receives the same skin. */
+html.codex-2007,
+html.codex-2007 * {
+  --qq2007-scrollbar-skin: xp-luna;
+  /* A non-auto standards value makes Chromium suppress the richer WebKit
+   * thumb/button rules below and fall back to a flat modern scrollbar. */
+  scrollbar-color: auto !important;
+  scrollbar-width: auto !important;
+}
+
+html.codex-2007 :is(
+  .thread-scroll-container,
+  aside.app-shell-left-panel,
+  [data-qq2007-settings-navigation="true"],
+  [data-qq2007-settings-main="true"]
+) {
+  scrollbar-gutter: stable;
+}
+
+html.codex-2007 *::-webkit-scrollbar {
+  height: 17px;
+  width: 17px;
+}
+
+html.codex-2007 *::-webkit-scrollbar-track,
+html.codex-2007 *::-webkit-scrollbar-track-piece {
+  background:
+    repeating-linear-gradient(135deg, rgb(181 213 237 / 18%) 0 1px, transparent 1px 3px),
+    #edf6fc;
+  border-left: 1px solid #c0d9ec;
+  border-right: 1px solid #f8fcff;
+  box-shadow: inset 1px 0 2px rgb(68 125 170 / 14%);
+}
+
+html.codex-2007 *::-webkit-scrollbar-thumb {
+  background:
+    linear-gradient(90deg, rgb(255 255 255 / 78%) 0 2px, transparent 2px calc(100% - 2px), rgb(51 111 163 / 24%) calc(100% - 2px)),
+    linear-gradient(90deg, #d8edfa 0%, #9bc9e8 38%, #6ca8d4 51%, #b8dcf1 100%);
+  border: 1px solid #4c83b5;
+  border-radius: 3px;
+  box-shadow: inset 1px 1px 0 #f7fcff, inset -1px -1px 0 rgb(49 104 151 / 30%);
+  min-height: 30px;
+  min-width: 30px;
+}
+
+html.codex-2007 *::-webkit-scrollbar-thumb:hover {
+  background:
+    linear-gradient(90deg, rgb(255 255 255 / 86%) 0 2px, transparent 2px calc(100% - 2px), rgb(35 94 147 / 28%) calc(100% - 2px)),
+    linear-gradient(90deg, #e8f7ff 0%, #a9daf3 38%, #4f9fd5 51%, #c8e9f8 100%);
+  border-color: #2f72ad;
+}
+
+html.codex-2007 *::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(90deg, #74acd5, #b8dff3 48%, #5b98c8 52%, #98c8e5);
+  border-color: #245f98;
+  box-shadow: inset 1px 1px 2px rgb(27 79 125 / 34%);
+}
+
+html.codex-2007 *::-webkit-scrollbar-button:single-button {
+  background-color: #d9edf9;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 1px solid #5d91bd;
+  box-shadow: inset 1px 1px 0 #f9fdff, inset -1px -1px 0 rgb(61 114 158 / 28%);
+  display: block;
+  height: 17px;
+  width: 17px;
+}
+
+html.codex-2007 *::-webkit-scrollbar-button:single-button:hover {
+  background-color: #f4fbff;
+  border-color: #3679b2;
+}
+
+html.codex-2007 *::-webkit-scrollbar-button:single-button:active {
+  background-color: #9cc9e6;
+  box-shadow: inset 1px 1px 2px rgb(33 87 133 / 34%);
+}
+
+/* Chromium exposes two logical buttons at each end. XP Luna uses only the
+ * outward-facing pair: up/left at the start and down/right at the end. */
+html.codex-2007 *::-webkit-scrollbar-button:vertical:start:increment,
+html.codex-2007 *::-webkit-scrollbar-button:vertical:end:decrement,
+html.codex-2007 *::-webkit-scrollbar-button:horizontal:start:increment,
+html.codex-2007 *::-webkit-scrollbar-button:horizontal:end:decrement {
+  display: none;
+  height: 0;
+  width: 0;
+}
+
+html.codex-2007 *::-webkit-scrollbar-button:vertical:decrement {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='7' viewBox='0 0 9 7'%3E%3Cpath d='M1 6 4.5 2 8 6' fill='none' stroke='%23366d9d' stroke-width='1.6' stroke-linecap='square'/%3E%3C/svg%3E");
+}
+
+html.codex-2007 *::-webkit-scrollbar-button:vertical:increment {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='7' viewBox='0 0 9 7'%3E%3Cpath d='m1 1 3.5 4L8 1' fill='none' stroke='%23366d9d' stroke-width='1.6' stroke-linecap='square'/%3E%3C/svg%3E");
+}
+
+html.codex-2007 *::-webkit-scrollbar-button:horizontal:decrement {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='9' viewBox='0 0 7 9'%3E%3Cpath d='M6 1 2 4.5 6 8' fill='none' stroke='%23366d9d' stroke-width='1.6' stroke-linecap='square'/%3E%3C/svg%3E");
+}
+
+html.codex-2007 *::-webkit-scrollbar-button:horizontal:increment {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='9' viewBox='0 0 7 9'%3E%3Cpath d='m1 1 4 3.5L1 8' fill='none' stroke='%23366d9d' stroke-width='1.6' stroke-linecap='square'/%3E%3C/svg%3E");
+}
+
+html.codex-2007 *::-webkit-scrollbar-corner {
+  background: linear-gradient(135deg, #f7fcff, #c5e1f2);
+  border: 1px solid #7ca7c8;
+}
+
 @media (max-width: 1080px) {
   #qq2007-right-panel {
     display: none;
-  }
-
-  html.codex-2007 main.main-surface > header.app-header-tint {
-    right: 7px !important;
   }
 
   .qq2007-tool-button {

@@ -4,7 +4,7 @@ Set-StrictMode -Version 2.0
 $ErrorActionPreference = 'Stop'
 
 $script:QQProductName = 'Codex 2007'
-$script:QQVersion = '1.1.0'
+$script:QQVersion = '1.2.0'
 $script:QQStateRoot = Join-Path $env:LOCALAPPDATA 'Codex2007'
 $script:QQRuntimeRoot = Join-Path $script:QQStateRoot 'runtime'
 $script:QQStatePath = Join-Path $script:QQRuntimeRoot 'state.json'

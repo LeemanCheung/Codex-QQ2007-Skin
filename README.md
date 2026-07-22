@@ -73,7 +73,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\Restore-Codex.
 
 ## 兼容性与安全边界
 
-当前已在 Codex `26.715.4045.0` 和 `26.715.7063.0` 实机验证。Codex DOM 不是公开稳定 API，应用升级后选择器仍可能变化；版本跨度和已知限制见 [兼容性说明](docs/COMPATIBILITY.md)。
+当前已在 Codex `26.715.4045.0`、`26.715.7063.0` 和 `26.715.8383.0` 实机验证。Codex DOM 不是公开稳定 API，应用升级后选择器仍可能变化；版本跨度和已知限制见 [兼容性说明](docs/COMPATIBILITY.md)。
 
 CDP 能控制渲染器，因此它是明确的本机攻击面。项目将地址限制为 `127.0.0.1`，并校验监听进程、官方程序路径、页面地址和 WebSocket 路径；使用结束后可运行恢复脚本关闭端口。完整威胁边界见 [SECURITY.md](SECURITY.md) 与 [隐私说明](docs/PRIVACY.md)。
 

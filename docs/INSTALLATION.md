@@ -23,7 +23,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\Install-Codex-
 安装器会把运行必需文件复制到：
 
 ```text
-%LOCALAPPDATA%\Codex2007\packages\1.1.0
+%LOCALAPPDATA%\Codex2007\packages\1.2.0
 ```
 
 并在桌面、开始菜单创建“Codex 2007”和“恢复原版 Codex”。产品名称、安装目录、脚本入口与界面标题均使用 Codex 2007 命名。

@@ -1,15 +1,14 @@
 {
   "schemaVersion": 1,
-  "id": "codex-qq2007-skin",
-  "name": "Codex QQ2007 Skin",
-  "legacyInstallId": "qq2009-programmer-codex",
-  "version": "1.0.0",
+  "id": "codex-2007",
+  "name": "Codex 2007",
+  "version": "1.1.0",
   "platform": "windows",
   "host": "OpenAI.Codex",
   "minimumNodeMajor": 22,
   "entrypoints": {
-    "install": "windows/Install-QQ2009-Programmer-Codex.ps1",
-    "start": "windows/Start-QQ2009-Programmer-Codex.ps1",
+    "install": "windows/Install-Codex-2007.ps1",
+    "start": "windows/Start-Codex-2007.ps1",
     "restore": "windows/Restore-Codex.ps1",
     "injector": "src/injector.mjs"
   },

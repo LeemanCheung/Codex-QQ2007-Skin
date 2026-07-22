@@ -1,31 +1,31 @@
 /* Codex 2007 visual layer — independently implemented over the native Codex DOM. */
 
-html.qq2009-programmer-codex {
+html.codex-2007 {
   --qq2007-left-width: clamp(260px, 22.3vw, 323px);
   --qq2007-right-width: clamp(230px, 18.7vw, 270px);
   color-scheme: light !important;
 }
 
-html.qq2009-programmer-codex,
-html.qq2009-programmer-codex body {
+html.codex-2007,
+html.codex-2007 body {
   background: #1768b4 !important;
 }
 
-html.qq2009-programmer-codex body,
-html.qq2009-programmer-codex button,
-html.qq2009-programmer-codex input,
-html.qq2009-programmer-codex textarea {
+html.codex-2007 body,
+html.codex-2007 button,
+html.codex-2007 input,
+html.codex-2007 textarea {
   font-family: Tahoma, "Microsoft YaHei UI", "Microsoft YaHei", sans-serif !important;
 }
 
-html.qq2009-programmer-codex [data-qq2007-shell-host="true"] {
+html.codex-2007 [data-qq2007-shell-host="true"] {
   background: #d8ecfa !important;
   border: 1px solid #07559f;
   box-shadow: inset 0 0 0 1px #73b3e7;
   box-sizing: border-box;
 }
 
-html.qq2009-programmer-codex [data-qq2007-topbar-host="true"] {
+html.codex-2007 [data-qq2007-topbar-host="true"] {
   background-color: #0b62b5 !important;
   background-image: var(--qq2007-title-bg) !important;
   background-position: center !important;
@@ -39,7 +39,7 @@ html.qq2009-programmer-codex [data-qq2007-topbar-host="true"] {
   position: relative !important;
 }
 
-html.qq2009-programmer-codex [data-qq2007-topbar-host="true"] > :not(#qq2007-window-title) {
+html.codex-2007 [data-qq2007-topbar-host="true"] > :not(#qq2007-window-title) {
   display: none !important;
 }
 
@@ -150,7 +150,7 @@ html.qq2009-programmer-codex [data-qq2007-topbar-host="true"] > :not(#qq2007-win
   width: 31px;
 }
 
-html.qq2009-programmer-codex [data-qq2007-workspace-host="true"] {
+html.codex-2007 [data-qq2007-workspace-host="true"] {
   background: #cbe3f5 !important;
   gap: 6px;
   min-height: 0 !important;
@@ -158,7 +158,7 @@ html.qq2009-programmer-codex [data-qq2007-workspace-host="true"] {
   padding: 0 7px;
 }
 
-html.qq2009-programmer-codex aside.app-shell-left-panel {
+html.codex-2007 aside.app-shell-left-panel {
   background: #eef7fd !important;
   border: 1px solid #4f8ec0 !important;
   border-radius: 4px 4px 0 0;
@@ -171,28 +171,28 @@ html.qq2009-programmer-codex aside.app-shell-left-panel {
   width: var(--qq2007-left-width) !important;
 }
 
-html.qq2009-programmer-codex aside.app-shell-left-panel > div.max-w-full {
+html.codex-2007 aside.app-shell-left-panel > div.max-w-full {
   background: #f4f9fd !important;
   box-sizing: border-box;
   padding-bottom: 88px !important;
   padding-top: 36px !important;
 }
 
-html.qq2009-programmer-codex aside.app-shell-left-panel [data-qq2007-native-aside-header="true"],
-html.qq2009-programmer-codex aside.app-shell-left-panel [data-qq2007-native-search="true"] {
+html.codex-2007 aside.app-shell-left-panel [data-qq2007-native-aside-header="true"],
+html.codex-2007 aside.app-shell-left-panel [data-qq2007-native-search="true"] {
   display: none !important;
 }
 
-html.qq2009-programmer-codex aside.app-shell-left-panel [data-qq2007-native-profile-host="true"] {
+html.codex-2007 aside.app-shell-left-panel [data-qq2007-native-profile-host="true"] {
   overflow: visible !important;
 }
 
-html.qq2009-programmer-codex aside.app-shell-left-panel [data-qq2007-native-profile-paint-host="true"] {
+html.codex-2007 aside.app-shell-left-panel [data-qq2007-native-profile-paint-host="true"] {
   contain: none !important;
   overflow: visible !important;
 }
 
-html.qq2009-programmer-codex aside.app-shell-left-panel [data-qq2007-native-profile-footer="true"] {
+html.codex-2007 aside.app-shell-left-panel [data-qq2007-native-profile-footer="true"] {
   align-items: stretch !important;
   background: transparent !important;
   bottom: -52px !important;
@@ -208,11 +208,11 @@ html.qq2009-programmer-codex aside.app-shell-left-panel [data-qq2007-native-prof
   z-index: 90 !important;
 }
 
-html.qq2009-programmer-codex aside.app-shell-left-panel [data-qq2007-native-profile-footer="true"] > button[aria-label*="帮助"] {
+html.codex-2007 aside.app-shell-left-panel [data-qq2007-native-profile-footer="true"] > button[aria-label*="帮助"] {
   display: none !important;
 }
 
-html.qq2009-programmer-codex aside.app-shell-left-panel [data-qq2007-native-profile-trigger="true"] {
+html.codex-2007 aside.app-shell-left-panel [data-qq2007-native-profile-trigger="true"] {
   display: flex !important;
   height: 51px !important;
   inset: 0 auto auto 0 !important;
@@ -262,25 +262,25 @@ html.qq2009-programmer-codex aside.app-shell-left-panel [data-qq2007-native-prof
   width: 18px;
 }
 
-html.qq2009-programmer-codex aside.app-shell-left-panel button,
-html.qq2009-programmer-codex aside.app-shell-left-panel a {
+html.codex-2007 aside.app-shell-left-panel button,
+html.codex-2007 aside.app-shell-left-panel a {
   border-radius: 0 !important;
   color: #17283d !important;
 }
 
-html.qq2009-programmer-codex aside.app-shell-left-panel button:hover,
-html.qq2009-programmer-codex aside.app-shell-left-panel a:hover {
+html.codex-2007 aside.app-shell-left-panel button:hover,
+html.codex-2007 aside.app-shell-left-panel a:hover {
   background: #d7edfc !important;
   box-shadow: inset 0 0 0 1px #8dc1e8 !important;
 }
 
-html.qq2009-programmer-codex aside.app-shell-left-panel [aria-current="page"],
-html.qq2009-programmer-codex aside.app-shell-left-panel [data-active="true"] {
+html.codex-2007 aside.app-shell-left-panel [aria-current="page"],
+html.codex-2007 aside.app-shell-left-panel [data-active="true"] {
   background: #c4e2f7 !important;
   box-shadow: inset 0 0 0 1px #6aa6d4 !important;
 }
 
-html.qq2009-programmer-codex aside.app-shell-left-panel [data-qq2007-nav] [data-qq2007-native-nav-glyph="true"] {
+html.codex-2007 aside.app-shell-left-panel [data-qq2007-nav] [data-qq2007-native-nav-glyph="true"] {
   display: none !important;
 }
 
@@ -291,7 +291,7 @@ html.qq2009-programmer-codex aside.app-shell-left-panel [data-qq2007-nav] [data-
   width: 20px !important;
 }
 
-html.qq2009-programmer-codex aside.app-shell-left-panel [data-qq2007-folder-row="true"] {
+html.codex-2007 aside.app-shell-left-panel [data-qq2007-folder-row="true"] {
   align-items: center;
   background-image: var(--qq2007-folder-bg) !important;
   background-position: 10px center !important;
@@ -315,9 +315,9 @@ html.qq2009-programmer-codex aside.app-shell-left-panel [data-qq2007-folder-row=
   width: 100%;
 }
 
-html.qq2009-programmer-codex aside.app-shell-left-panel h2,
-html.qq2009-programmer-codex aside.app-shell-left-panel [data-slot="section-title"],
-html.qq2009-programmer-codex aside.app-shell-left-panel [data-qq2007-section-heading="true"] {
+html.codex-2007 aside.app-shell-left-panel h2,
+html.codex-2007 aside.app-shell-left-panel [data-slot="section-title"],
+html.codex-2007 aside.app-shell-left-panel [data-qq2007-section-heading="true"] {
   background-color: #e4f2fc !important;
   background-image: var(--qq2007-panel-header-bg) !important;
   background-size: 100% 100% !important;
@@ -328,7 +328,7 @@ html.qq2009-programmer-codex aside.app-shell-left-panel [data-qq2007-section-hea
   font-weight: 700 !important;
 }
 
-html.qq2009-programmer-codex aside.app-shell-left-panel * {
+html.codex-2007 aside.app-shell-left-panel * {
   scrollbar-color: #7fb6da #edf6fc;
   scrollbar-width: thin;
 }
@@ -438,7 +438,7 @@ html.qq2009-programmer-codex aside.app-shell-left-panel * {
   width: 22px;
 }
 
-html.qq2009-programmer-codex main.main-surface {
+html.codex-2007 main.main-surface {
   background: #fbfdff !important;
   border: 1px solid #4e8dbc;
   border-radius: 4px 4px 0 0;
@@ -447,7 +447,7 @@ html.qq2009-programmer-codex main.main-surface {
   overflow: hidden;
 }
 
-html.qq2009-programmer-codex main.main-surface > header.app-header-tint {
+html.codex-2007 main.main-surface > header.app-header-tint {
   background-color: #e4f2fc !important;
   background-image: var(--qq2007-panel-header-bg) !important;
   background-position: center !important;
@@ -461,29 +461,28 @@ html.qq2009-programmer-codex main.main-surface > header.app-header-tint {
   top: 107px !important;
 }
 
-/* Codex's native “Output / Sources” tray is an in-conversation floating
- * surface. In fullscreen it needs a reserved lane instead of covering chat
- * text; the decorative QQ friend pane yields that lane only while the real
- * tray is visible, then returns automatically. */
-html.qq2009-programmer-codex [data-qq2007-workspace-host="true"][data-qq2007-native-output-active="true"] #qq2007-right-panel {
+/* Codex's native “Output / Sources” and “Environment information” trays are
+ * in-conversation floating surfaces. In fullscreen the decorative QQ friend
+ * pane yields only while a tray's native open animation is fully expanded. */
+html.codex-2007 [data-qq2007-workspace-host="true"][data-qq2007-native-output-active="true"] #qq2007-right-panel {
   display: none !important;
 }
 
-html.qq2009-programmer-codex main.main-surface[data-qq2007-native-output-overlay="true"] > header.app-header-tint {
+html.codex-2007 main.main-surface[data-qq2007-native-output-overlay="true"] > header.app-header-tint {
   right: 7px !important;
 }
 
-html.qq2009-programmer-codex main.main-surface[data-qq2007-native-output-overlay="true"] .thread-scroll-container [class*="max-w-(--thread-content-max-width)"] {
+html.codex-2007 main.main-surface[data-qq2007-native-output-overlay="true"] .thread-scroll-container [class*="max-w-(--thread-content-max-width)"] {
   margin-left: 0 !important;
   margin-right: auto !important;
   max-width: calc(100% - var(--qq2007-native-output-width, 338px)) !important;
 }
 
-html.qq2009-programmer-codex main.main-surface > header.app-header-tint button {
+html.codex-2007 main.main-surface > header.app-header-tint button {
   color: #174d79 !important;
 }
 
-html.qq2009-programmer-codex main.main-surface > header.app-header-tint > :not(#qq2007-main-title) {
+html.codex-2007 main.main-surface > header.app-header-tint > :not(#qq2007-main-title) {
   display: none !important;
 }
 
@@ -494,7 +493,7 @@ html.qq2009-programmer-codex main.main-surface > header.app-header-tint > :not(#
   gap: 6px;
   height: 100%;
   min-width: 0;
-  padding: 0 8px;
+  padding: 0 8px 0 var(--qq2007-main-title-safe-inset, 26px);
   pointer-events: none;
 }
 
@@ -511,15 +510,15 @@ html.qq2009-programmer-codex main.main-surface > header.app-header-tint > :not(#
   white-space: nowrap;
 }
 
-html.qq2009-programmer-codex .app-shell-main-content-viewport,
-html.qq2009-programmer-codex main.main-surface > div {
+html.codex-2007 .app-shell-main-content-viewport,
+html.codex-2007 main.main-surface > div {
   background: #fbfdff !important;
   --conversation-item-gap: 10px;
 }
 
-html.qq2009-programmer-codex main.main-surface article,
-html.qq2009-programmer-codex main.main-surface [data-message-author-role],
-html.qq2009-programmer-codex main.main-surface [class*="_markdownContent_"] {
+html.codex-2007 main.main-surface article,
+html.codex-2007 main.main-surface [data-message-author-role],
+html.codex-2007 main.main-surface [class*="_markdownContent_"] {
   color: #1a252e !important;
   font-family: Tahoma, "Microsoft YaHei UI", "Microsoft YaHei", sans-serif !important;
   font-size: 13px !important;
@@ -528,16 +527,16 @@ html.qq2009-programmer-codex main.main-surface [class*="_markdownContent_"] {
   text-rendering: optimizeLegibility;
 }
 
-html.qq2009-programmer-codex main.main-surface [class*="_markdownContent_"] p {
+html.codex-2007 main.main-surface [class*="_markdownContent_"] p {
   line-height: 20px !important;
   margin: 0 !important;
 }
 
-html.qq2009-programmer-codex main.main-surface [class*="_markdownContent_"] p + p {
+html.codex-2007 main.main-surface [class*="_markdownContent_"] p + p {
   margin-top: 10px !important;
 }
 
-html.qq2009-programmer-codex main.main-surface [class*="_markdownContent_"] :is(h1, h2, h3, h4) {
+html.codex-2007 main.main-surface [class*="_markdownContent_"] :is(h1, h2, h3, h4) {
   color: #111b24 !important;
   font-family: Tahoma, "Microsoft YaHei UI", "Microsoft YaHei", sans-serif !important;
   font-size: 14px !important;
@@ -546,24 +545,24 @@ html.qq2009-programmer-codex main.main-surface [class*="_markdownContent_"] :is(
   margin: 12px 0 8px !important;
 }
 
-html.qq2009-programmer-codex main.main-surface [class*="_markdownContent_"] :is(ul, ol) {
+html.codex-2007 main.main-surface [class*="_markdownContent_"] :is(ul, ol) {
   margin: 7px 0 11px !important;
   padding-left: 25px !important;
 }
 
-html.qq2009-programmer-codex main.main-surface [class*="_markdownContent_"] li {
+html.codex-2007 main.main-surface [class*="_markdownContent_"] li {
   line-height: 23px !important;
   margin: 0 !important;
   padding-left: 2px !important;
 }
 
-html.qq2009-programmer-codex main.main-surface [class*="_markdownContent_"] li::marker {
+html.codex-2007 main.main-surface [class*="_markdownContent_"] li::marker {
   color: #1475c8 !important;
   font-size: 1.04em;
 }
 
-html.qq2009-programmer-codex main.main-surface :not(pre) > code,
-html.qq2009-programmer-codex main.main-surface .inline-markdown {
+html.codex-2007 main.main-surface :not(pre) > code,
+html.codex-2007 main.main-surface .inline-markdown {
   background: #eef6fc !important;
   border: 1px solid #aecbe1 !important;
   border-radius: 4px !important;
@@ -575,7 +574,7 @@ html.qq2009-programmer-codex main.main-surface .inline-markdown {
   padding: 1px 6px !important;
 }
 
-html.qq2009-programmer-codex main.main-surface pre {
+html.codex-2007 main.main-surface pre {
   background: #f4f9fd !important;
   border: 1px solid #78aeda !important;
   border-radius: 8px !important;
@@ -590,7 +589,7 @@ html.qq2009-programmer-codex main.main-surface pre {
   position: relative !important;
 }
 
-html.qq2009-programmer-codex main.main-surface pre::before {
+html.codex-2007 main.main-surface pre::before {
   color: #506981;
   content: attr(data-qq2007-code-language);
   font-family: Tahoma, "Microsoft YaHei UI", sans-serif;
@@ -602,7 +601,7 @@ html.qq2009-programmer-codex main.main-surface pre::before {
   top: 9px;
 }
 
-html.qq2009-programmer-codex main.main-surface pre code {
+html.codex-2007 main.main-surface pre code {
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
@@ -613,13 +612,13 @@ html.qq2009-programmer-codex main.main-surface pre code {
   padding: 0 !important;
 }
 
-html.qq2009-programmer-codex main.main-surface pre button,
-html.qq2009-programmer-codex main.main-surface [data-testid*="copy" i] {
+html.codex-2007 main.main-surface pre button,
+html.codex-2007 main.main-surface [data-testid*="copy" i] {
   color: #0d4d83 !important;
   opacity: 1 !important;
 }
 
-html.qq2009-programmer-codex main.main-surface pre button {
+html.codex-2007 main.main-surface pre button {
   border: 0 !important;
   border-radius: 3px !important;
   right: 7px !important;
@@ -786,7 +785,7 @@ html.qq2009-programmer-codex main.main-surface pre button {
   background-size: 100% 100%;
   border-bottom: 1px solid #73a6ce;
   color: #1a4f7d;
-  content: 'QQ 程序员快捷任务';
+  content: 'Codex 2007 快捷任务';
   font-size: 11px;
   font-weight: 700;
   left: 0;
@@ -881,7 +880,67 @@ html.qq2009-programmer-codex main.main-surface pre button {
   border-color: #84b267;
 }
 
-html.qq2009-programmer-codex .composer-surface-chrome {
+/* Completed-message controls keep the native buttons and click handlers. The
+ * skin only replaces their glyphs and adds the compact QQ 2007 labels. */
+html.codex-2007 [data-qq2007-message-actions="true"] {
+  align-items: center !important;
+  gap: 2px !important;
+  opacity: 1 !important;
+}
+
+html.codex-2007 button[data-qq2007-message-action] {
+  align-items: center !important;
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 2px !important;
+  box-sizing: border-box !important;
+  color: #49667e !important;
+  display: inline-flex !important;
+  font-family: Tahoma, "Microsoft YaHei UI", sans-serif !important;
+  font-size: 11px !important;
+  gap: 2px !important;
+  height: 24px !important;
+  justify-content: center !important;
+  min-width: 36px !important;
+  padding: 1px 4px !important;
+  width: auto !important;
+}
+
+html.codex-2007 button[data-qq2007-message-action]:hover,
+html.codex-2007 button[data-qq2007-message-action]:focus-visible,
+html.codex-2007 button[data-qq2007-message-action][aria-pressed="true"] {
+  background: linear-gradient(#fff, #e6f4ff) !important;
+  border-color: #82add0 !important;
+  box-shadow: inset 0 1px 0 #fff !important;
+  color: #174d77 !important;
+  outline: 0 !important;
+}
+
+html.codex-2007 button[data-qq2007-message-action] [data-qq2007-message-native-icon="true"] {
+  display: none !important;
+}
+
+.qq2007-message-action-icon {
+  display: block;
+  flex: 0 0 18px;
+  height: 18px;
+  overflow: visible;
+  width: 18px;
+}
+
+.qq2007-message-action-label {
+  line-height: 18px;
+  pointer-events: none;
+  text-shadow: 0 1px 0 #fff;
+}
+
+html.codex-2007 [data-qq2007-message-time="true"] {
+  color: #6d7d8c !important;
+  font-family: Tahoma, "Microsoft YaHei UI", sans-serif !important;
+  font-size: 11px !important;
+}
+
+html.codex-2007 .composer-surface-chrome {
   background: #fff !important;
   border: 1px solid #4d8fc5 !important;
   border-radius: 4px !important;
@@ -892,13 +951,13 @@ html.qq2009-programmer-codex .composer-surface-chrome {
   z-index: 20 !important;
 }
 
-html.qq2009-programmer-codex .composer-surface-chrome:focus-within {
+html.codex-2007 .composer-surface-chrome:focus-within {
   border-color: #176cad !important;
   box-shadow: 0 0 0 2px rgb(92 170 222 / 22%), 0 2px 6px rgb(23 80 124 / 18%) !important;
 }
 
-html.qq2009-programmer-codex .composer-surface-chrome textarea,
-html.qq2009-programmer-codex .composer-surface-chrome [contenteditable="true"] {
+html.codex-2007 .composer-surface-chrome textarea,
+html.codex-2007 .composer-surface-chrome [contenteditable="true"] {
   box-sizing: border-box !important;
   min-height: 85px !important;
   padding-bottom: 38px !important;
@@ -984,7 +1043,7 @@ html.qq2009-programmer-codex .composer-surface-chrome [contenteditable="true"] {
   white-space: nowrap;
 }
 
-html.qq2009-programmer-codex .composer-surface-chrome [data-qq2007-native-model-trigger="true"] {
+html.codex-2007 .composer-surface-chrome [data-qq2007-native-model-trigger="true"] {
   bottom: 7px !important;
   height: 29px !important;
   left: auto !important;
@@ -1001,7 +1060,7 @@ html.qq2009-programmer-codex .composer-surface-chrome [data-qq2007-native-model-
 
 /* The visible QQ button remains decorative; this transparent, resized native
  * control is the physical click target so the message is sent by Codex itself. */
-html.qq2009-programmer-codex .composer-surface-chrome [data-qq2007-native-send-trigger="true"] {
+html.codex-2007 .composer-surface-chrome [data-qq2007-native-send-trigger="true"] {
   bottom: 7px !important;
   height: 31px !important;
   left: auto !important;
@@ -1097,11 +1156,22 @@ html.qq2009-programmer-codex .composer-surface-chrome [data-qq2007-native-send-t
   overflow: hidden;
 }
 
-.qq2007-bot-stage > img,
-.qq2007-friend-stage > img {
+.qq2007-bot-stage > .qq2007-motion-stage,
+.qq2007-friend-stage > .qq2007-motion-stage {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.qq2007-motion-stage > img {
+  display: block;
   height: 100%;
   object-fit: cover;
   width: 100%;
+}
+
+.qq2007-motion-stage > .qq2007-motion-stage-static {
+  display: none;
 }
 
 .qq2007-bot-identity {
@@ -1331,23 +1401,23 @@ html.qq2009-programmer-codex .composer-surface-chrome [data-qq2007-native-send-t
   margin-top: 3px;
 }
 
-html.qq2009-programmer-codex [data-qq2007-renamed="true"] {
+html.codex-2007 [data-qq2007-renamed="true"] {
   color: inherit;
 }
 
 /* Settings keeps its native controls and service rows; this layer only gives
  * the real surface the same QQ2007 window, pane and form treatment. */
-html.qq2009-programmer-codex[data-qq2007-settings-surface="true"],
-html.qq2009-programmer-codex[data-qq2007-settings-surface="true"] body {
+html.codex-2007[data-qq2007-settings-surface="true"],
+html.codex-2007[data-qq2007-settings-surface="true"] body {
   background: #b8d9f3 !important;
 }
 
-html.qq2009-programmer-codex [data-qq2007-settings-host="true"] {
+html.codex-2007 [data-qq2007-settings-host="true"] {
   background: #c7e1f4 !important;
   color: #132b48 !important;
 }
 
-html.qq2009-programmer-codex [data-qq2007-settings-topbar="true"] {
+html.codex-2007 [data-qq2007-settings-topbar="true"] {
   background-color: #0b62b5 !important;
   background-image: var(--qq2007-title-bg) !important;
   background-position: center !important;
@@ -1359,8 +1429,8 @@ html.qq2009-programmer-codex [data-qq2007-settings-topbar="true"] {
   position: relative !important;
 }
 
-html.qq2009-programmer-codex [data-qq2007-settings-topbar="true"] button,
-html.qq2009-programmer-codex [data-qq2007-settings-topbar="true"] a {
+html.codex-2007 [data-qq2007-settings-topbar="true"] button,
+html.codex-2007 [data-qq2007-settings-topbar="true"] a {
   color: #f9fdff !important;
   text-shadow: 0 1px 1px #06346c;
 }
@@ -1388,25 +1458,49 @@ html.qq2009-programmer-codex [data-qq2007-settings-topbar="true"] a {
   width: 25px;
 }
 
-html.qq2009-programmer-codex [data-qq2007-settings-sidebar="true"] {
+html.codex-2007 [data-qq2007-settings-sidebar="true"] {
+  /* This marker belongs on the real app-shell aside. Its parent is the
+   * horizontal settings workspace, so the fixed flex basis controls width
+   * without accidentally locking the inner category stack to 300px tall. */
+  align-self: stretch !important;
   background: #eef7fd !important;
   border-right: 1px solid #4f8ec0 !important;
   box-shadow: inset -1px 0 #fff;
   display: flex !important;
   flex-direction: column !important;
   flex: 0 0 var(--qq2007-left-width) !important;
+  height: 100% !important;
+  max-height: none !important;
   min-height: 0 !important;
   min-width: var(--qq2007-left-width) !important;
   overflow: hidden !important;
   width: var(--qq2007-left-width) !important;
 }
 
+/* Height must be propagated through every native wrapper between the aside
+ * and its category scrollport. Without this chain, the inner flex item only
+ * receives its content height and appears as a one-row strip. */
+html.codex-2007 [data-qq2007-settings-column="true"],
+html.codex-2007 [data-qq2007-settings-navigation-host="true"] {
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex: 1 1 0 !important;
+  flex-direction: column !important;
+  height: auto !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  width: 100% !important;
+}
+
 /* The native settings list used to keep its own short scrollport, leaving a
  * large empty strip below the categories.  It is now the flex-fill portion of
  * the sidebar: all settings stay reachable, and only vertical scrolling is
  * allowed when the window is genuinely too short. */
-html.qq2009-programmer-codex [data-qq2007-settings-navigation="true"] {
-  flex: 1 1 0 !important;
+html.codex-2007 [data-qq2007-settings-navigation="true"] {
+  box-sizing: border-box !important;
+  flex: 1 1 auto !important;
+  height: auto !important;
   min-height: 0 !important;
   max-height: none !important;
   overflow-x: hidden !important;
@@ -1415,7 +1509,7 @@ html.qq2009-programmer-codex [data-qq2007-settings-navigation="true"] {
   padding-bottom: 14px !important;
 }
 
-html.qq2009-programmer-codex [data-qq2007-settings-back="true"] {
+html.codex-2007 [data-qq2007-settings-back="true"] {
   align-items: center !important;
   background: linear-gradient(#fafdff, #d5ecfd) !important;
   border: 1px solid #77a9d1 !important;
@@ -1427,30 +1521,32 @@ html.qq2009-programmer-codex [data-qq2007-settings-back="true"] {
   margin: 7px 8px 5px !important;
   min-height: 30px !important;
   padding: 3px 9px !important;
+  flex-shrink: 0 !important;
 }
 
-html.qq2009-programmer-codex [data-qq2007-settings-back="true"]:hover,
-html.qq2009-programmer-codex [data-qq2007-settings-back="true"]:focus-visible {
+html.codex-2007 [data-qq2007-settings-back="true"]:hover,
+html.codex-2007 [data-qq2007-settings-back="true"]:focus-visible {
   background: #fffbdc !important;
   border-color: #ce9d36 !important;
   outline: 1px dotted #9a6f18 !important;
   outline-offset: 1px;
 }
 
-html.qq2009-programmer-codex [data-qq2007-settings-search="true"] {
+html.codex-2007 [data-qq2007-settings-search="true"] {
   background: #f8fcff !important;
   border: 1px solid #77a9d1 !important;
   border-radius: 2px !important;
   box-shadow: inset 0 1px 2px rgb(11 70 123 / 16%), 0 1px 0 #fff;
   margin: 3px 8px 8px !important;
+  flex-shrink: 0 !important;
 }
 
-html.qq2009-programmer-codex [data-qq2007-settings-search="true"] input,
-html.qq2009-programmer-codex [data-qq2007-settings-search="true"] textarea {
+html.codex-2007 [data-qq2007-settings-search="true"] input,
+html.codex-2007 [data-qq2007-settings-search="true"] textarea {
   color: #193f62 !important;
 }
 
-html.qq2009-programmer-codex [data-qq2007-settings-row="true"] {
+html.codex-2007 [data-qq2007-settings-row="true"] {
   align-items: center !important;
   background: transparent !important;
   border: 1px solid transparent !important;
@@ -1462,23 +1558,23 @@ html.qq2009-programmer-codex [data-qq2007-settings-row="true"] {
   padding-inline: 8px !important;
 }
 
-html.qq2009-programmer-codex [data-qq2007-settings-row="true"] svg,
-html.qq2009-programmer-codex [data-qq2007-settings-row="true"] img {
+html.codex-2007 [data-qq2007-settings-row="true"] svg,
+html.codex-2007 [data-qq2007-settings-row="true"] img {
   color: #1c5d99 !important;
   filter: saturate(1.15) contrast(1.05);
 }
 
-html.qq2009-programmer-codex [data-qq2007-settings-row="true"]:hover,
-html.qq2009-programmer-codex [data-qq2007-settings-row="true"]:focus-visible {
+html.codex-2007 [data-qq2007-settings-row="true"]:hover,
+html.codex-2007 [data-qq2007-settings-row="true"]:focus-visible {
   background: #d9edfb !important;
   border-color: #78abd3 !important;
   box-shadow: inset 0 1px 0 #fff;
   outline: 0 !important;
 }
 
-html.qq2009-programmer-codex [data-qq2007-settings-row="true"][aria-current="page"],
-html.qq2009-programmer-codex [data-qq2007-settings-row="true"][data-state="active"],
-html.qq2009-programmer-codex [data-qq2007-settings-row="true"].bg-token-list-hover-background {
+html.codex-2007 [data-qq2007-settings-row="true"][aria-current="page"],
+html.codex-2007 [data-qq2007-settings-row="true"][data-state="active"],
+html.codex-2007 [data-qq2007-settings-row="true"].bg-token-list-hover-background {
   background: #b8dcf5 !important;
   border-color: #4e9bd1 !important;
   box-shadow: inset 0 1px 0 #eaf8ff, inset 0 -1px 0 rgb(57 132 188 / 30%);
@@ -1486,34 +1582,34 @@ html.qq2009-programmer-codex [data-qq2007-settings-row="true"].bg-token-list-hov
   font-weight: 700 !important;
 }
 
-html.qq2009-programmer-codex [data-qq2007-settings-main="true"] {
+html.codex-2007 [data-qq2007-settings-main="true"] {
   background: #f7fcff !important;
   border: 1px solid #4f8ec0 !important;
   box-shadow: inset 0 0 0 1px #fff;
   color: #122c48 !important;
 }
 
-html.qq2009-programmer-codex [data-qq2007-settings-heading="true"] {
+html.codex-2007 [data-qq2007-settings-heading="true"] {
   color: #0a376b !important;
   font-family: Tahoma, "Microsoft YaHei UI", "Microsoft YaHei", sans-serif !important;
   font-weight: 700 !important;
   text-shadow: 0 1px 0 #fff;
 }
 
-html.qq2009-programmer-codex [data-qq2007-settings-card="true"] {
+html.codex-2007 [data-qq2007-settings-card="true"] {
   background: linear-gradient(135deg, #fff, #f0f8fe 70%, #e7f3fc) !important;
   border: 1px solid #78a8d0 !important;
   border-radius: 4px !important;
   box-shadow: inset 0 1px 0 #fff, 0 1px 2px rgb(15 77 126 / 18%) !important;
 }
 
-html.qq2009-programmer-codex [data-qq2007-settings-main="true"] [role="switch"] {
+html.codex-2007 [data-qq2007-settings-main="true"] [role="switch"] {
   border-color: #3f86bd !important;
   box-shadow: inset 0 1px 1px rgb(7 61 108 / 25%);
 }
 
-html.qq2009-programmer-codex [data-qq2007-settings-main="true"] button[aria-haspopup="menu"],
-html.qq2009-programmer-codex [data-qq2007-settings-main="true"] select {
+html.codex-2007 [data-qq2007-settings-main="true"] button[aria-haspopup="menu"],
+html.codex-2007 [data-qq2007-settings-main="true"] select {
   background: linear-gradient(#fff, #e9f5fd) !important;
   border-color: #76a9d1 !important;
   border-radius: 2px !important;
@@ -1521,7 +1617,7 @@ html.qq2009-programmer-codex [data-qq2007-settings-main="true"] select {
   color: #153d64 !important;
 }
 
-html.qq2009-programmer-codex [data-qq2007-settings-main="true"] :is(input, textarea):not([type="checkbox"]):not([type="radio"]) {
+html.codex-2007 [data-qq2007-settings-main="true"] :is(input, textarea):not([type="checkbox"]):not([type="radio"]) {
   background: #fff !important;
   border-color: #77a9d1 !important;
   border-radius: 2px !important;
@@ -1529,11 +1625,11 @@ html.qq2009-programmer-codex [data-qq2007-settings-main="true"] :is(input, texta
   color: #173a5e !important;
 }
 
-html.qq2009-programmer-codex [data-qq2007-settings-main="true"] ::-webkit-scrollbar {
+html.codex-2007 [data-qq2007-settings-main="true"] ::-webkit-scrollbar {
   width: 12px;
 }
 
-html.qq2009-programmer-codex [data-qq2007-settings-main="true"] ::-webkit-scrollbar-thumb {
+html.codex-2007 [data-qq2007-settings-main="true"] ::-webkit-scrollbar-thumb {
   background: linear-gradient(90deg, #bfdff3, #6fa8d0, #b7def3);
   border: 1px solid #4f8ec0;
   border-radius: 2px;
@@ -1544,7 +1640,7 @@ html.qq2009-programmer-codex [data-qq2007-settings-main="true"] ::-webkit-scroll
     display: none;
   }
 
-  html.qq2009-programmer-codex main.main-surface > header.app-header-tint {
+  html.codex-2007 main.main-surface > header.app-header-tint {
     right: 7px !important;
   }
 
@@ -1564,6 +1660,14 @@ html.qq2009-programmer-codex [data-qq2007-settings-main="true"] ::-webkit-scroll
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .qq2007-motion-stage > .qq2007-motion-stage-animated {
+    display: none;
+  }
+
+  .qq2007-motion-stage > .qq2007-motion-stage-static {
+    display: block;
+  }
+
   #qq2007-toast {
     transition: none;
   }

@@ -9,6 +9,7 @@ apply-*.json
 inspect-*.json
 
 # Screenshots and private references
+/artifacts/
 *-live.png
 skin-*.png
 design-comparison*.png

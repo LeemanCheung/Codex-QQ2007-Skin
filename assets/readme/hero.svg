@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
+  <title id="title">Codex 2007 — Windows Codex 的 QQ2007 怀旧视觉层</title>
+  <desc id="desc">深蓝标题栏与冰蓝工作区组成的项目首图，展示左侧任务栏、中央原生对话区和右侧好友形象栏。</desc>
+  <defs>
+    <linearGradient id="page" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f8fcff"/>
+      <stop offset="1" stop-color="#d8ecfa"/>
+    </linearGradient>
+    <linearGradient id="titlebar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#0b62b5"/>
+      <stop offset="0.55" stop-color="#2380d8"/>
+      <stop offset="1" stop-color="#1768b4"/>
+    </linearGradient>
+    <linearGradient id="toolbar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f8fdff"/>
+      <stop offset="1" stop-color="#cbe3f5"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-15%" width="120%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#083c79" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="420" rx="24" fill="url(#page)"/>
+  <path d="M0 24A24 24 0 0 1 24 0h1152a24 24 0 0 1 24 24v46H0Z" fill="url(#titlebar)"/>
+  <circle cx="34" cy="35" r="13" fill="#fff" opacity="0.98"/>
+  <path d="M28 40c4-12 8-12 12 0M30 31h8" fill="none" stroke="#1768b4" stroke-width="3" stroke-linecap="round"/>
+  <text x="60" y="45" fill="#fff" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="25" font-weight="700">Codex 2007</text>
+  <text x="1025" y="43" fill="#dff1ff" font-family="Segoe UI, sans-serif" font-size="20">LOCAL · REVERSIBLE</text>
+
+  <g transform="translate(54 112)">
+    <text x="0" y="0" fill="#1768b4" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="20" font-weight="700" letter-spacing="2">WINDOWS CODEX VISUAL LAYER</text>
+    <text x="0" y="67" fill="#092052" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="58" font-weight="800">把 Codex 装进</text>
+    <text x="0" y="128" fill="#0b62b5" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="58" font-weight="800">QQ2007 的蓝色窗口</text>
+    <text x="2" y="177" fill="#285578" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="24">保留原生交互 · 本机注入 · 独立验收 · 一键恢复</text>
+
+    <g transform="translate(0 216)" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="19" font-weight="700">
+      <rect width="138" height="39" rx="8" fill="#fff" stroke="#78aeda"/>
+      <text x="69" y="26" text-anchor="middle" fill="#174d79">WINDOWS 10/11</text>
+      <rect x="150" width="116" height="39" rx="8" fill="#fff" stroke="#78aeda"/>
+      <text x="208" y="26" text-anchor="middle" fill="#174d79">NODE 22+</text>
+      <rect x="278" width="128" height="39" rx="8" fill="#e5f6df" stroke="#84b267"/>
+      <text x="342" y="26" text-anchor="middle" fill="#3a6c25">NO TELEMETRY</text>
+    </g>
+  </g>
+
+  <g transform="translate(676 102)" filter="url(#shadow)">
+    <rect width="470" height="268" rx="12" fill="#f8fcff" stroke="#4e8dbc" stroke-width="2"/>
+    <rect x="1" y="1" width="468" height="38" rx="10" fill="url(#toolbar)"/>
+    <rect x="1" y="29" width="468" height="10" fill="url(#toolbar)"/>
+    <circle cx="22" cy="20" r="7" fill="#73b938" stroke="#3e8618"/>
+    <text x="40" y="27" fill="#11284a" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="20" font-weight="700">Codex 2007 - 当前任务</text>
+
+    <rect x="12" y="52" width="112" height="202" rx="7" fill="#eef7fd" stroke="#8db9da"/>
+    <text x="25" y="80" fill="#145086" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="18" font-weight="700">任务</text>
+    <rect x="23" y="94" width="90" height="25" rx="6" fill="#c4e2f7" stroke="#6aa6d4"/>
+    <rect x="23" y="132" width="76" height="8" rx="4" fill="#a4c9e5"/>
+    <rect x="23" y="152" width="84" height="8" rx="4" fill="#c6ddec"/>
+    <rect x="23" y="172" width="64" height="8" rx="4" fill="#c6ddec"/>
+
+    <rect x="136" y="52" width="218" height="202" fill="#fff" stroke="#aecbe1"/>
+    <rect x="152" y="72" width="151" height="12" rx="6" fill="#d7e5ef"/>
+    <rect x="181" y="99" width="154" height="38" rx="13" fill="#eef1f4"/>
+    <rect x="152" y="153" width="168" height="9" rx="4" fill="#d7e5ef"/>
+    <rect x="152" y="172" width="138" height="9" rx="4" fill="#d7e5ef"/>
+    <rect x="148" y="207" width="194" height="34" rx="6" fill="#fbfdff" stroke="#78aeda"/>
+    <text x="161" y="230" fill="#778998" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="18">随心输入</text>
+
+    <rect x="366" y="52" width="92" height="202" rx="7" fill="#eef7fd" stroke="#8db9da"/>
+    <text x="378" y="80" fill="#11284a" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="18" font-weight="700">好友</text>
+    <circle cx="412" cy="118" r="28" fill="#4e8bea" stroke="#174d79" stroke-width="3"/>
+    <rect x="392" y="109" width="40" height="21" rx="7" fill="#11284a"/>
+    <path d="m400 115 8 6-8 6m18 0h7" fill="none" stroke="#9df6ff" stroke-width="3" stroke-linecap="round"/>
+    <text x="377" y="161" fill="#11284a" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="18" font-weight="700">Codex 小蓝</text>
+    <rect x="377" y="181" width="70" height="8" rx="4" fill="#a4c9e5"/>
+    <rect x="377" y="200" width="60" height="8" rx="4" fill="#c6ddec"/>
+  </g>
+</svg>

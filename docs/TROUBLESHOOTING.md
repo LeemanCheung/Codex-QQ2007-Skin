@@ -5,7 +5,7 @@
 1. 确认使用主题快捷方式，而不是官方 Codex 图标。
 2. 检查 Node.js：`node --version`，需要 22+。
 3. 重新运行启动脚本并记录退出码。
-4. 查看 `%LOCALAPPDATA%\QQ2009ProgrammerCodex\runtime\verify.json` 的 `pass`、`nativeAppIntact` 和 `visualContract`，不要公开完整文件。
+4. 查看 `%LOCALAPPDATA%\Codex2007\runtime\verify.json` 的 `pass`、`nativeAppIntact` 和 `visualContract`，不要公开完整文件。
 
 ## 启动器报告“主题布局验收未通过”
 

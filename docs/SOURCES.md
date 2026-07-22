@@ -28,5 +28,8 @@
 ## 素材声明
 
 - `codex2007-*`：为本项目制作的界面、角色和背景素材。
+- `qq-retro-stage.png`：为右下角 QQ 秀生成的项目原创企鹅形象；不包含第三方 QQ 原始美术、Logo 或文字。
+- `codex2007-bot-typing-sprites.png`、`qq-retro-wave-sprites.png`：以项目自有角色 PNG 为参考生成的 2×2 动作关键帧，分别描述左右手敲键盘，以及右手挥动并眨眼。
+- `codex2007-bot-stage.gif`、`qq-retro-stage.gif`：由上述关键帧通过 `scripts/build-animated-stages.py` 确定性裁切、统一背景并编排生成；GIF 不引入新的第三方素材。
 - `qq-level-*`：从历史等级参考图提取的第三方经典等级图标，不属于 MIT 授权，详见 [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md)。
 - 未打包第三方换肤引擎、原始 QQ 主题包或修改后的 Codex 二进制。

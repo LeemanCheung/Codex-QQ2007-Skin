@@ -11,7 +11,7 @@ if ($PSVersionTable.PSEdition -ne 'Desktop') {
 try {
     $state = Read-QQState
     if ($null -eq $state) {
-        Write-Host '未发现活动的 QQ2009 主题状态；未修改 Codex。'
+        Write-Host '未发现活动的 Codex 2007 主题状态；未修改 Codex。'
         exit 0
     }
 

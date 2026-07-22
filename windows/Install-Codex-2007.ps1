@@ -14,7 +14,7 @@ if ($PSVersionTable.PSEdition -ne 'Desktop') {
 
 try {
     $sourceRoot = Get-QQPackageRoot
-    $installRoot = Join-Path $script:QQStateRoot 'packages\1.0.0'
+    $installRoot = Join-Path (Join-Path $script:QQStateRoot 'packages') $script:QQVersion
     New-Item -ItemType Directory -Force -Path $installRoot | Out-Null
 
     $copyManifest = [ordered]@{
@@ -25,7 +25,8 @@ try {
             'codex2007-tool-new.png', 'codex2007-tool-scheduled.png',
             'codex2007-tool-plugins.png', 'codex2007-tool-sites.png',
             'codex2007-tool-pr.png', 'codex2007-tool-chat.png',
-            'codex2007-bot-stage.png', 'codex2007-friend-stage.png',
+            'codex2007-bot-stage.png', 'codex2007-bot-stage.gif',
+            'qq-retro-stage.png', 'qq-retro-stage.gif', 'codex2007-friend-stage.png',
             'codex2007-status-icons.png', 'codex2007-shield.png',
             'codex2007-signal.png', 'codex2007-flower.png',
             'codex2007-composer-emoji.png', 'codex2007-composer-image.png',
@@ -39,8 +40,8 @@ try {
         )
         src = @('injector.mjs', 'token-stats.mjs', 'skin-runtime.js', 'skin.css')
         windows = @(
-            'Common.ps1', 'Start-QQ2009-Programmer-Codex.ps1',
-            'Restore-Codex.ps1', 'Install-QQ2009-Programmer-Codex.ps1'
+            'Common.ps1', 'Start-Codex-2007.ps1',
+            'Restore-Codex.ps1', 'Install-Codex-2007.ps1'
         )
         docs = @(
             'INSTALLATION.md', 'USAGE.md', 'ARCHITECTURE.md',
@@ -80,13 +81,13 @@ try {
 
     $createdShortcuts = @()
     foreach ($location in $shortcutLocations) {
-        $startLink = Join-Path $location 'QQ2009 程序员版 Codex.lnk'
+        $startLink = Join-Path $location 'Codex 2007.lnk'
         $startShortcut = $shell.CreateShortcut($startLink)
         $startShortcut.TargetPath = $windowsPowerShell
-        $startShortcut.Arguments = '-NoProfile -ExecutionPolicy Bypass -File "' + (Join-Path $installRoot 'windows\Start-QQ2009-Programmer-Codex.ps1') + '"'
+        $startShortcut.Arguments = '-NoProfile -ExecutionPolicy Bypass -File "' + (Join-Path $installRoot 'windows\Start-Codex-2007.ps1') + '"'
         $startShortcut.WorkingDirectory = $installRoot
         $startShortcut.IconLocation = $codex.Executable + ',0'
-        $startShortcut.Description = '启动 QQ2009 程序员版 Codex'
+        $startShortcut.Description = '启动 Codex 2007'
         $startShortcut.Save()
         $createdShortcuts += $startLink
 
@@ -112,9 +113,9 @@ try {
     [IO.File]::WriteAllText((Join-Path $script:QQStateRoot 'install.json'), $installJson + [Environment]::NewLine, [Text.UTF8Encoding]::new($false))
 
     Write-Host "安装完成：$installRoot" -ForegroundColor Green
-    Write-Host '桌面已创建“QQ2009 程序员版 Codex”和“恢复原版 Codex”快捷方式。'
+    Write-Host '桌面已创建“Codex 2007”和“恢复原版 Codex”快捷方式。'
     if (-not $NoLaunch) {
-        & (Join-Path $installRoot 'windows\Start-QQ2009-Programmer-Codex.ps1')
+        & (Join-Path $installRoot 'windows\Start-Codex-2007.ps1')
         exit $LASTEXITCODE
     }
     exit 0

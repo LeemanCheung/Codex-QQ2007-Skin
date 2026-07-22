@@ -1,11 +1,11 @@
 (() => {
   'use strict';
 
-  const STATE_KEY = '__QQ2009_PROGRAMMER_CODEX_STATE__';
-  const CONFIG_KEY = '__QQ2009_PROGRAMMER_CODEX_CONFIG__';
-  const DISABLED_KEY = 'qq2009-programmer-codex-disabled';
-  const WEEKLY_QUOTA_KEY = 'qq2009-programmer-codex-weekly-quota';
-  const STYLE_ID = 'qq2009-programmer-codex-style';
+  const STATE_KEY = '__CODEX_2007_STATE__';
+  const CONFIG_KEY = '__CODEX_2007_CONFIG__';
+  const DISABLED_KEY = 'codex-2007-disabled';
+  const WEEKLY_QUOTA_KEY = 'codex-2007-weekly-quota';
+  const STYLE_ID = 'codex-2007-style';
   const config = window[CONFIG_KEY];
 
   if (!config || typeof config.css !== 'string' || !config.assets) {
@@ -36,6 +36,8 @@
     nativeProfileButton: null,
     weeklyQuota: null,
     settingsPaused: false,
+    settingsPoller: null,
+    refreshSettingsTheme: null,
   };
   window[STATE_KEY] = state;
 
@@ -57,6 +59,46 @@
     image.draggable = false;
     return image;
   };
+  const makeMotionStageImage = (animatedSource, staticSource, alt) => {
+    const stage = create('span', 'qq2007-motion-stage');
+    const animated = makeImage(animatedSource || staticSource, alt, 'qq2007-motion-stage-animated');
+    animated.dataset.qq2007MotionStage = 'animated';
+    const still = makeImage(staticSource, alt, 'qq2007-motion-stage-static');
+    still.dataset.qq2007MotionStage = 'static';
+    stage.append(animated, still);
+    return stage;
+  };
+  const makeClassicMessageActionIcon = (kind) => {
+    const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    icon.setAttribute('viewBox', '0 0 18 18');
+    icon.setAttribute('width', '18');
+    icon.setAttribute('height', '18');
+    icon.setAttribute('focusable', 'false');
+    icon.setAttribute('aria-hidden', 'true');
+    icon.classList.add('qq2007-message-action-icon');
+    if (kind === 'like' || kind === 'dislike') {
+      icon.innerHTML = `
+        <g${kind === 'dislike' ? ' transform="translate(0 18) scale(1 -1)"' : ''}>
+          <path d="M6.1 8.1c1.25-.72 2.18-1.76 2.65-3.14.24-.72.54-1.86 1.42-1.86.91 0 1.3.77 1.3 1.61 0 .72-.28 1.6-.55 2.26h2.48c1.23 0 2.1 1.02 1.84 2.2l-1.04 4.72c-.23 1.04-1.12 1.78-2.18 1.78H6.1Z" fill="${kind === 'like' ? '#ffe486' : '#d9ecfa'}" stroke="#397aaa" stroke-width="1.15" stroke-linejoin="round"/>
+          <path d="M2.1 8.35h3.98v7.42H2.1c-.46 0-.83-.37-.83-.83V9.18c0-.46.37-.83.83-.83Z" fill="#e6f4ff" stroke="#397aaa" stroke-width="1.15"/>
+          <path d="M2.55 13.55h2.1" stroke="#84b4d6" stroke-width=".9" stroke-linecap="round"/>
+        </g>`;
+    } else if (kind === 'copy') {
+      icon.innerHTML = `
+        <rect x="5.15" y="2.1" width="9.25" height="10.7" rx="1.15" fill="#f7fcff" stroke="#397aaa" stroke-width="1.1"/>
+        <path d="M7.2 5h5.1M7.2 7.35h5.1M7.2 9.7h3.7" fill="none" stroke="#8db8d8" stroke-width=".9" stroke-linecap="round"/>
+        <path d="M4.2 5.15H3.6c-.75 0-1.35.6-1.35 1.35v7.95c0 .75.6 1.35 1.35 1.35h6.75c.75 0 1.35-.6 1.35-1.35v-.6" fill="#dceffc" stroke="#397aaa" stroke-width="1.1" stroke-linecap="round"/>
+      `;
+    } else {
+      icon.innerHTML = `
+        <circle cx="4" cy="4.5" r="1.65" fill="#e8f5ff" stroke="#397aaa" stroke-width="1.1"/>
+        <circle cx="4" cy="13.5" r="1.65" fill="#e8f5ff" stroke="#397aaa" stroke-width="1.1"/>
+        <circle cx="14" cy="9" r="1.65" fill="#ffe486" stroke="#397aaa" stroke-width="1.1"/>
+        <path d="M5.55 5.25 12.3 8.3M5.55 12.75l6.75-3.05" fill="none" stroke="#397aaa" stroke-width="1.45" stroke-linecap="round"/>
+      `;
+    }
+    return icon;
+  };
   const makeSettingsTitle = () => {
     const title = create('div', 'qq2007-settings-title');
     title.id = 'qq2007-settings-title';
@@ -72,13 +114,16 @@
     return rectangle.width > 0 && rectangle.height > 0
       && style.visibility !== 'hidden' && style.display !== 'none';
   };
-  const isSettingsSurface = () => {
-    const root = document.getElementById('root');
-    if (!root) return false;
-    const hasSettingsSearch = Array.from(root.querySelectorAll('input, textarea, [contenteditable="true"]')).some((node) => /搜索设置|search settings/i.test(`${node.getAttribute('placeholder') || ''} ${node.getAttribute('aria-label') || ''}`));
-    const hasBackToApp = Array.from(root.querySelectorAll('button, a, [role="button"], [role="link"]')).some((node) => /^(返回应用|back to app)$/i.test(normalize(node.textContent)));
-    return hasSettingsSearch && hasBackToApp;
-  };
+  const findSettingsSearch = (root = document.getElementById('root')) => Array.from(
+    root?.querySelectorAll('input, textarea, [contenteditable="true"]') || [],
+  ).find((node) => /搜索设置|search settings/i.test(
+    `${node.getAttribute('placeholder') || ''} ${node.getAttribute('aria-label') || ''}`,
+  ));
+  // The settings search is a stable, surface-specific native marker. Recent
+  // Codex builds hydrate “Back to app” through different element types, so
+  // requiring it to remain a button/link makes the watcher misclassify the
+  // settings page and destructively re-bootstrap the normal task layout.
+  const isSettingsSurface = () => Boolean(findSettingsSearch());
   const nativeApprovalDecisionButtons = () => Array.from(document.querySelectorAll('button')).filter((button) => (
     !button.closest('[id^="qq2007-"]') && isVisible(button)
   )).map((button) => normalize(button.textContent));
@@ -326,7 +371,7 @@
     welcome.setAttribute('aria-label', 'Codex 2007 新建任务欢迎区');
     const header = create('div', 'qq2007-home-welcome-header');
     header.appendChild(makeImage(config.assets.penguin2007, 'Codex 企鹅'));
-    header.appendChild(create('strong', '', 'QQ 程序员服务台 · Codex 小蓝'));
+    header.appendChild(create('strong', '', 'Codex 2007 服务台 · Codex 小蓝'));
     const status = create('span', 'qq2007-home-welcome-status', '在线');
     status.setAttribute('aria-label', 'Codex 小蓝在线');
     header.appendChild(status);
@@ -450,20 +495,128 @@
         || 'bash';
       block.dataset.qq2007CodeLanguage = language;
     }
+    const presentations = [
+      { kind: 'copy', label: '复制', pattern: /^(?:复制|复制消息|copy|copy message)$/i },
+      { kind: 'like', label: '赞', pattern: /^(?:喜欢|like)$/i },
+      { kind: 'dislike', label: '踩', pattern: /^(?:不喜欢|dislike)$/i },
+      { kind: 'share', label: '分享', pattern: /^(?:从这里继续新任务|continue(?: from here)?(?: in a)? new task|fork|share|分享)$/i },
+    ];
+    const presentationForButton = (button) => presentations.find(({ pattern }) => (
+      pattern.test(normalize(button.getAttribute('aria-label')))
+    ));
+    const findMessageActionStrip = (button) => {
+      let candidate = button.parentElement;
+      while (candidate && candidate !== main) {
+        const matchingButtons = Array.from(candidate.querySelectorAll('button[aria-label]')).filter(presentationForButton);
+        const kinds = matchingButtons.map((matchingButton) => presentationForButton(matchingButton).kind);
+        if (
+          matchingButtons.length === presentations.length
+          && new Set(kinds).size === presentations.length
+        ) return candidate;
+        if (candidate.hasAttribute('data-turn-key')) return null;
+        candidate = candidate.parentElement;
+      }
+      return null;
+    };
+
+    // Earlier builds could climb past the compact footer and mark an entire
+    // virtualized turn as the action strip. align-items:center then let a long
+    // command establish a huge intrinsic width and moved the conversation out
+    // of the center pane. Clear every previous marker and re-scope it below.
+    for (const staleStrip of main.querySelectorAll('[data-qq2007-message-actions="true"]')) {
+      delete staleStrip.dataset.qq2007MessageActions;
+    }
+    const messageButtons = Array.from(main.querySelectorAll('button[aria-label]'));
+    for (const button of messageButtons) {
+      const presentation = presentationForButton(button);
+      if (!presentation) continue;
+      const strip = findMessageActionStrip(button);
+      // Standalone and legacy partial controls still receive the retro icon,
+      // but only the four-action assistant footer receives strip layout.
+      button.dataset.qq2007MessageAction = presentation.kind;
+      const nativeIcon = Array.from(button.querySelectorAll('svg')).find((svg) => !svg.classList.contains('qq2007-message-action-icon'));
+      if (nativeIcon) nativeIcon.dataset.qq2007MessageNativeIcon = 'true';
+      if (!button.querySelector(':scope > .qq2007-message-action-icon')) {
+        button.prepend(makeClassicMessageActionIcon(presentation.kind));
+      }
+      let label = button.querySelector(':scope > .qq2007-message-action-label');
+      if (!label) {
+        label = create('span', 'qq2007-message-action-label');
+        label.setAttribute('aria-hidden', 'true');
+        button.appendChild(label);
+      }
+      setText(label, presentation.label);
+
+      if (!strip) continue;
+      strip.dataset.qq2007MessageActions = 'true';
+      const footer = strip.parentElement;
+      const time = Array.from(footer?.querySelectorAll('time, span, div') || []).find((node) => {
+        if (node.closest('[data-qq2007-message-actions="true"]')) return false;
+        return /^(?:(?:今天|昨天|today|yesterday)\s*)?\d{1,2}:\d{2}$/i.test(normalize(node.textContent));
+      });
+      if (time) time.dataset.qq2007MessageTime = 'true';
+    }
+  };
+
+  const syncMainTitleSafeInset = () => {
+    const main = document.querySelector('main.main-surface');
+    const header = main?.querySelector(':scope > header.app-header-tint');
+    const title = byId('qq2007-main-title');
+    if (!main || !header || !title) return;
+    const mainRect = main.getBoundingClientRect();
+    const headerRect = header.getBoundingClientRect();
+    // The native fixed header deliberately protrudes into the left rail. Keep
+    // the QQ title aligned to the main content edge so it never collides with
+    // the sidebar collapse control at either expanded or compact widths.
+    const inset = Math.max(8, Math.ceil(mainRect.left - headerRect.left) + 8);
+    title.style.setProperty('--qq2007-main-title-safe-inset', `${inset}px`);
   };
 
   const syncNativeOutputOverlay = () => {
     const main = document.querySelector('main.main-surface');
     if (!main) return;
+    const isViewportVisible = (node) => {
+      if (!isVisible(node)) return false;
+      const rectangle = node.getBoundingClientRect();
+      return rectangle.width > 0
+        && rectangle.height > 0
+        && rectangle.right > 0
+        && rectangle.bottom > 0
+        && rectangle.left < window.innerWidth
+        && rectangle.top < window.innerHeight;
+    };
+    const isNativeTrayExpanded = (card) => {
+      const motionShell = card.closest('.origin-top-right');
+      if (!motionShell) return false;
+      const transform = getComputedStyle(motionShell).transform;
+      if (!transform || transform === 'none') return true;
+      try {
+        const matrix = new DOMMatrixReadOnly(transform);
+        return Math.abs(matrix.m41) <= 2
+          && Math.abs(matrix.m42) <= 2
+          && matrix.a >= 0.98
+          && matrix.d >= 0.98;
+      } catch {
+        return false;
+      }
+    };
     const outputOverlay = Array.from(main.querySelectorAll('div')).find((node) => {
-      if (node.closest('[id^="qq2007-"]') || !isVisible(node)) return false;
+      if (node.closest('[id^="qq2007-"]') || !isViewportVisible(node)) return false;
       const classes = node.classList;
-      const text = normalize(node.textContent);
+      // A right-side host can remain mounted after its contents have slid
+      // outside the window. Count it only after the native motion shell has
+      // returned to its expanded matrix; closed cards use translateX + scale.
+      const visibleTrayCards = Array.from(node.querySelectorAll('.bg-token-dropdown-background')).filter((card) => {
+        const rectangle = card.getBoundingClientRect();
+        return isViewportVisible(card)
+          && rectangle.width >= 200
+          && isNativeTrayExpanded(card);
+      });
+      const isNativeInformationTray = visibleTrayCards.some((card) => /(?:输出|output|来源|source|环境信息|environment(?:\s+information)?)/i.test(normalize(card.textContent)));
       return classes.contains('absolute')
         && classes.contains('right-0')
-        && /(?:输出|output)/i.test(text)
-        && /(?:来源|source)/i.test(text)
-        && node.getBoundingClientRect().width >= 220;
+        && node.getBoundingClientRect().width >= 220
+        && isNativeInformationTray;
     });
     const workspace = main.closest('[data-qq2007-workspace-host="true"]');
     if (!outputOverlay) {
@@ -566,7 +719,11 @@
     header.appendChild(makeImage(config.assets.rightControls, '', 'qq2007-right-controls'));
 
     const botStage = create('div', 'qq2007-bot-stage');
-    botStage.appendChild(makeImage(config.assets.botStage, '蓝色机器人 Codex 小蓝'));
+    botStage.appendChild(makeMotionStageImage(
+      config.assets.botStageAnimated,
+      config.assets.botStage,
+      '蓝色机器人 Codex 小蓝',
+    ));
     const identity = create('div', 'qq2007-bot-identity');
     const onlineIcon = makeImage(config.assets.onlineIcon, '', 'qq2007-status-icon');
     onlineIcon.dataset.qqAgentDot = 'right';
@@ -607,7 +764,11 @@
     friendsHeader.appendChild(create('strong', '', '我的好友 (1/1)'));
     friendsHeader.querySelector('strong').dataset.qqFriendCount = 'true';
     const friendStage = create('div', 'qq2007-friend-stage');
-    friendStage.appendChild(makeImage(config.assets.friendStage, '星空背景动漫好友形象'));
+    friendStage.appendChild(makeMotionStageImage(
+      config.assets.friendStageAnimated,
+      config.assets.friendStage,
+      'QQ Retro 企鹅形象',
+    ));
     const friendSearch = create('button', 'qq2007-friend-search');
     friendSearch.type = 'button';
     friendSearch.appendChild(create('span', '', '查找好友...'));
@@ -997,8 +1158,8 @@
 
   const removeNormalThemeArtifacts = () => {
     for (const id of ['qq2007-window-title', 'qq2007-toolbar', 'qq2007-left-header', 'qq2007-left-profile', 'qq2007-main-title', 'qq2007-right-panel', 'qq2007-composer-chrome', 'qq2007-statusbar', 'qq2007-toast', 'qq2007-left-chat-shortcut', 'qq2007-home-welcome']) byId(id)?.remove();
-    for (const node of document.querySelectorAll('.qq2007-native-nav-icon, .qq2007-folder-icon, .qq2007-home-card-badge, .qq2007-home-card-copy')) node.remove();
-    for (const node of document.querySelectorAll('[data-qq2007-shell-host], [data-qq2007-workspace-host], [data-qq2007-topbar-host], [data-qq2007-nav], [data-qq2007-native-nav-glyph], [data-qq2007-folder-row], [data-qq2007-section-heading], [data-qq2007-native-aside-header], [data-qq2007-native-search], [data-qq2007-native-profile-footer], [data-qq2007-native-profile-host], [data-qq2007-native-profile-paint-host], [data-qq2007-native-profile-trigger], [data-qq2007-native-model-trigger], [data-qq2007-native-send-trigger], [data-qq2007-home-suggestions], [data-qq2007-home-prompt], [data-qq2007-home-card], [data-qq2007-home-native-card-body], pre[data-qq2007-code-language]')) {
+    for (const node of document.querySelectorAll('.qq2007-native-nav-icon, .qq2007-folder-icon, .qq2007-home-card-badge, .qq2007-home-card-copy, .qq2007-message-action-icon, .qq2007-message-action-label')) node.remove();
+    for (const node of document.querySelectorAll('[data-qq2007-shell-host], [data-qq2007-workspace-host], [data-qq2007-topbar-host], [data-qq2007-nav], [data-qq2007-native-nav-glyph], [data-qq2007-folder-row], [data-qq2007-section-heading], [data-qq2007-native-aside-header], [data-qq2007-native-search], [data-qq2007-native-profile-footer], [data-qq2007-native-profile-host], [data-qq2007-native-profile-paint-host], [data-qq2007-native-profile-trigger], [data-qq2007-native-model-trigger], [data-qq2007-native-send-trigger], [data-qq2007-home-suggestions], [data-qq2007-home-prompt], [data-qq2007-home-card], [data-qq2007-home-native-card-body], [data-qq2007-message-action], [data-qq2007-message-actions], [data-qq2007-message-time], [data-qq2007-message-native-icon], pre[data-qq2007-code-language]')) {
       for (const attribute of Array.from(node.attributes)) {
         if (attribute.name.startsWith('data-qq2007-')) node.removeAttribute(attribute.name);
       }
@@ -1007,7 +1168,7 @@
   const clearSettingsDecorations = () => {
     byId('qq2007-settings-title')?.remove();
     document.documentElement.removeAttribute('data-qq2007-settings-surface');
-    for (const node of document.querySelectorAll('[data-qq2007-settings-host], [data-qq2007-settings-topbar], [data-qq2007-settings-sidebar], [data-qq2007-settings-navigation], [data-qq2007-settings-main], [data-qq2007-settings-back], [data-qq2007-settings-search], [data-qq2007-settings-row], [data-qq2007-settings-heading], [data-qq2007-settings-card]')) {
+    for (const node of document.querySelectorAll('[data-qq2007-settings-host], [data-qq2007-settings-topbar], [data-qq2007-settings-sidebar], [data-qq2007-settings-column], [data-qq2007-settings-navigation-host], [data-qq2007-settings-navigation], [data-qq2007-settings-main], [data-qq2007-settings-back], [data-qq2007-settings-search], [data-qq2007-settings-row], [data-qq2007-settings-heading], [data-qq2007-settings-card]')) {
       for (const attribute of Array.from(node.attributes)) {
         if (attribute.name.startsWith('data-qq2007-settings-')) node.removeAttribute(attribute.name);
       }
@@ -1050,15 +1211,28 @@
       if (!title) title = makeSettingsTitle();
       if (title.parentElement !== topbar) topbar.appendChild(title);
     }
-    const search = Array.from(root.querySelectorAll('input, textarea, [contenteditable="true"]')).find((node) => /搜索设置|search settings/i.test(`${node.getAttribute('placeholder') || ''} ${node.getAttribute('aria-label') || ''}`));
+    const search = findSettingsSearch(root);
     const searchHost = search?.closest('form, div') || search?.parentElement;
     if (searchHost) searchHost.dataset.qq2007SettingsSearch = 'true';
     const back = Array.from(root.querySelectorAll('button, a, [role="button"], [role="link"]')).find((node) => /^(返回应用|back to app)$/i.test(normalize(node.textContent)));
     if (back) back.dataset.qq2007SettingsBack = 'true';
     const rows = Array.from(root.querySelectorAll('[data-settings-panel-slug]'));
     for (const row of rows) row.dataset.qq2007SettingsRow = 'true';
-    const sidebar = commonAncestor([...rows, searchHost, back].filter(Boolean));
+    const settingsContent = commonAncestor([...rows, searchHost, back].filter(Boolean));
+    // The common ancestor is the inner vertical stack, not the settings pane.
+    // Applying the 300px sidebar flex basis to that stack turns 300px into its
+    // height because its parent is a column flexbox.  Always decorate the real
+    // app-shell aside when it exists so the basis remains a horizontal width.
+    const sidebar = settingsContent?.closest('aside.app-shell-left-panel') || settingsContent;
     if (sidebar) sidebar.dataset.qq2007SettingsSidebar = 'true';
+    // The native settings pane wraps its controls in one or more auto-height
+    // columns. Flex growth on the scrollport cannot cross those wrappers, so
+    // mark the complete sidebar -> content height chain explicitly.
+    let settingsColumn = settingsContent;
+    while (settingsColumn && settingsColumn !== sidebar) {
+      settingsColumn.dataset.qq2007SettingsColumn = 'true';
+      settingsColumn = settingsColumn.parentElement;
+    }
     // Codex keeps the category list in a smaller independently scrollable
     // container. Mark that exact container instead of expanding the entire
     // sidebar: it preserves the real buttons while allowing the list to use
@@ -1076,7 +1250,17 @@
       const style = getComputedStyle(node);
       return /(?:auto|scroll)/.test(style.overflowY) || node.scrollHeight > node.clientHeight + 2;
     }) || navigationCandidates[0];
-    if (settingsNavigation) settingsNavigation.dataset.qq2007SettingsNavigation = 'true';
+    if (settingsNavigation) {
+      settingsNavigation.dataset.qq2007SettingsNavigation = 'true';
+      // Some Codex builds add another wrapper between the content column and
+      // the real scrollport. It must also flex-fill or the list collapses to a
+      // single row despite both endpoints having the right declarations.
+      let navigationHost = settingsNavigation.parentElement;
+      while (navigationHost && navigationHost !== settingsContent && navigationHost !== sidebar) {
+        navigationHost.dataset.qq2007SettingsNavigationHost = 'true';
+        navigationHost = navigationHost.parentElement;
+      }
+    }
     const main = findSettingsMain(root, sidebar);
     if (main) {
       main.dataset.qq2007SettingsMain = 'true';
@@ -1100,9 +1284,14 @@
   };
   const activateSettingsTheme = () => {
     if (!state.settingsPaused) removeNormalThemeArtifacts();
-    document.documentElement.classList.add('qq2009-programmer-codex');
+    document.documentElement.classList.add('codex-2007');
     decorateSettingsSurface();
     state.settingsPaused = true;
+  };
+  state.refreshSettingsTheme = () => {
+    if (!isSettingsSurface()) return false;
+    activateSettingsTheme();
+    return true;
   };
   const ensureLayout = () => {
     const layout = findLayout();
@@ -1128,6 +1317,7 @@
     }
     const mainHeader = layout.main.querySelector('header.app-header-tint');
     if (mainHeader && !byId('qq2007-main-title')) mainHeader.appendChild(makeMainTitle());
+    syncMainTitleSafeInset();
     let right = byId('qq2007-right-panel');
     if (!right) right = makeRightPanel();
     if (right.parentElement !== layout.workspace) layout.workspace.appendChild(right);
@@ -1146,6 +1336,7 @@
     }
     decorateHomeSurface();
     decorateMessageContent();
+    syncMainTitleSafeInset();
     if (!byId('qq2007-toast')) (document.body || document.documentElement).appendChild(makeToast());
     return Boolean(
       byId('qq2007-window-title')
@@ -1171,7 +1362,7 @@
     if (state.settingsPaused) {
       state.settingsPaused = false;
       clearSettingsDecorations();
-      document.documentElement.classList.add('qq2009-programmer-codex');
+      document.documentElement.classList.add('codex-2007');
     }
     ensureLayout();
     decorateHomeSurface();
@@ -1222,6 +1413,10 @@
       delete node.dataset.qq2007HomeCard;
       delete node.dataset.qq2007HomeCardKind;
       delete node.dataset.qq2007HomeNativeCardBody;
+      delete node.dataset.qq2007MessageAction;
+      delete node.dataset.qq2007MessageActions;
+      delete node.dataset.qq2007MessageTime;
+      delete node.dataset.qq2007MessageNativeIcon;
       delete node.dataset.qq2007CodeLanguage;
     }
     if (restoreText) {
@@ -1237,20 +1432,24 @@
     }
     state.textRenames.clear();
     state.attributeRenames.clear();
-    document.documentElement.classList.remove('qq2009-programmer-codex');
+    document.documentElement.classList.remove('codex-2007');
     for (const property of ['--qq2007-title-bg', '--qq2007-toolbar-bg', '--qq2007-panel-header-bg', '--qq2007-status-bg', '--qq2007-send-bg', '--qq2007-folder-bg']) {
       document.documentElement.style.removeProperty(property);
     }
     document.removeEventListener('visibilitychange', updateAgentState);
     window.removeEventListener('online', updateAgentState);
     window.removeEventListener('offline', updateAgentState);
+    window.removeEventListener('resize', queueReconcile);
+    if (state.settingsPoller) window.clearInterval(state.settingsPoller);
+    state.settingsPoller = null;
+    state.refreshSettingsTheme = null;
     if (window[STATE_KEY] === state) delete window[STATE_KEY];
   };
 
   installStyle();
   setAssetVariables();
   const settingsAtStartup = isSettingsSurface();
-  document.documentElement.classList.add('qq2009-programmer-codex');
+  document.documentElement.classList.add('codex-2007');
   if (settingsAtStartup) activateSettingsTheme();
   const initialLayoutReady = settingsAtStartup || ensureLayout();
   if (!settingsAtStartup) {
@@ -1272,6 +1471,13 @@
   document.addEventListener('visibilitychange', updateAgentState);
   window.addEventListener('online', updateAgentState);
   window.addEventListener('offline', updateAgentState);
+  window.addEventListener('resize', queueReconcile);
+  // Settings is a SPA surface whose root can be replaced without a reliable
+  // mutation boundary. A small idempotent poll closes that race and is paused
+  // automatically with the page; it never touches normal task layout.
+  state.settingsPoller = window.setInterval(() => {
+    if (isSettingsSurface()) state.refreshSettingsTheme?.();
+  }, 400);
   const interval = window.setInterval(() => {
     if (hasNativeApprovalSurface()) {
       updateAgentState();

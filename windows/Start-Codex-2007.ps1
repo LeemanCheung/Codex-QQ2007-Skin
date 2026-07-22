@@ -106,7 +106,7 @@ try {
         verifiedAt = (Get-Date).ToUniversalTime().ToString('o')
     })
 
-    Write-Host "QQ2009 程序员版 Codex 已启动并通过验证。" -ForegroundColor Green
+    Write-Host "Codex 2007 已启动并通过验证。" -ForegroundColor Green
     Write-Host "QQ等级由本机累计 Token 统计自动计算；主题接口仅监听 127.0.0.1:$port。"
     exit 0
 }

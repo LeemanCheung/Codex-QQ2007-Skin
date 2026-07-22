@@ -41,7 +41,7 @@ function Test-PowerShellSyntax {
 function Test-Manifest {
     try { $manifest = Get-Content -LiteralPath (Join-Path $root 'manifest.json') -Raw -Encoding UTF8 | ConvertFrom-Json }
     catch { Add-Failure "manifest.json is invalid: $($_.Exception.Message)"; return }
-    if ($manifest.version -ne '1.0.0') { Add-Failure 'manifest version must remain 1.0.0 for this release.' }
+    if ([string]$manifest.version -notmatch '^\d+\.\d+\.\d+$') { Add-Failure 'manifest version must use semantic versioning.' }
     if ($manifest.id -ne 'codex-2007') { Add-Failure 'manifest id must be codex-2007.' }
     if ($manifest.name -ne 'Codex 2007') { Add-Failure 'manifest name must be Codex 2007.' }
     foreach ($property in $manifest.entrypoints.PSObject.Properties) {
@@ -50,6 +50,27 @@ function Test-Manifest {
     }
     foreach ($asset in @($manifest.thirdPartyAssets)) {
         if (-not (Test-Path -LiteralPath (Join-Path $root $asset) -PathType Leaf)) { Add-Failure "Missing declared third-party asset: $asset" }
+    }
+}
+
+function Test-VersionConsistency {
+    $manifest = Get-Content -LiteralPath (Join-Path $root 'manifest.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+    $version = [string]$manifest.version
+    $common = Get-Content -LiteralPath (Join-Path $root 'windows/Common.ps1') -Raw -Encoding UTF8
+    $installer = Get-Content -LiteralPath (Join-Path $root 'windows/Install-Codex-2007.ps1') -Raw -Encoding UTF8
+    $installation = Get-Content -LiteralPath (Join-Path $root 'docs/INSTALLATION.md') -Raw -Encoding UTF8
+    $changelog = Get-Content -LiteralPath (Join-Path $root 'CHANGELOG.md') -Raw -Encoding UTF8
+    if (-not $common.Contains("`$script:QQVersion = '$version'")) {
+        Add-Failure "windows/Common.ps1 version does not match manifest: $version"
+    }
+    if (-not $installer.Contains("Join-Path (Join-Path `$script:QQStateRoot 'packages') `$script:QQVersion")) {
+        Add-Failure 'Installer package path must derive from the canonical runtime version.'
+    }
+    if (-not $installation.Contains("packages\$version")) {
+        Add-Failure "Installation documentation does not contain package version $version."
+    }
+    if (-not $changelog.Contains("## [$version]")) {
+        Add-Failure "CHANGELOG.md does not contain version $version."
     }
 }
 
@@ -90,7 +111,7 @@ function Test-RequiredFiles {
     $required = @(
         'README.md', 'SECURITY.md', 'LICENSE', 'LICENSE.txt', 'NOTICE.txt', 'THIRD_PARTY_NOTICES.md',
         'CHANGELOG.md', 'CONTRIBUTING.md', 'SUPPORT.md', 'docs/SOURCES.md',
-        'scripts/build-animated-stages.py',
+        'scripts/build-animated-stages.py', 'scripts/Build-Release.ps1', 'scripts/Test-Release.ps1',
         'assets/codex2007-title-bg.png', 'assets/codex2007-window-controls.png',
         'assets/codex2007-bot-typing-sprites.png', 'assets/codex2007-bot-stage.gif',
         'assets/qq-retro-stage.png', 'assets/qq-retro-wave-sprites.png', 'assets/qq-retro-stage.gif',
@@ -122,7 +143,10 @@ function Test-AnimatedAssets {
 }
 
 function Test-MarkdownLinks {
-    foreach ($file in Get-ChildItem -LiteralPath $root -Recurse -Filter '*.md' -File) {
+    $markdownFiles = Get-ChildItem -LiteralPath $root -Recurse -Filter '*.md' -File | Where-Object {
+        $_.FullName -notmatch '[\\/]\.git[\\/]' -and $_.FullName -notmatch '[\\/]artifacts[\\/]'
+    }
+    foreach ($file in $markdownFiles) {
         $content = Get-Content -LiteralPath $file.FullName -Raw -Encoding UTF8
         foreach ($match in [regex]::Matches($content, '\]\((?<target>[^)]+)\)')) {
             $target = $match.Groups['target'].Value.Trim().Trim('<', '>')
@@ -303,6 +327,7 @@ function Test-MainTitleSafeInsetContract {
 Test-JavaScriptSyntax
 Test-PowerShellSyntax
 Test-Manifest
+Test-VersionConsistency
 Test-CanonicalProductNaming
 Test-RequiredFiles
 Test-AnimatedAssets

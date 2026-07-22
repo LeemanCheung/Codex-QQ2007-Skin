@@ -14,7 +14,7 @@ if ($PSVersionTable.PSEdition -ne 'Desktop') {
 
 try {
     $sourceRoot = Get-QQPackageRoot
-    $installRoot = Join-Path $script:QQStateRoot 'packages\1.0.0'
+    $installRoot = Join-Path (Join-Path $script:QQStateRoot 'packages') $script:QQVersion
     New-Item -ItemType Directory -Force -Path $installRoot | Out-Null
 
     $copyManifest = [ordered]@{

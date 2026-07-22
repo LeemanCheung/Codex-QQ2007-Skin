@@ -11,7 +11,7 @@
 
 1. 从 GitHub Releases 或仓库下载源码。
 2. 查看 [SECURITY.md](../SECURITY.md) 与 [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md)。
-3. 如使用发布包，按 `SHA256SUMS` 校验文件完整性。
+3. 如使用发布包，先按同名 `.sha256` 文件校验 ZIP，再按包内 `PACKAGE-SHA256SUMS` 校验解压后的文件。
 4. 关闭不可信的本机程序；主题运行期间会开放回环 CDP 端口。
 
 ## 安装
@@ -23,7 +23,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\Install-Codex-
 安装器会把运行必需文件复制到：
 
 ```text
-%LOCALAPPDATA%\Codex2007\packages\1.0.0
+%LOCALAPPDATA%\Codex2007\packages\1.1.0
 ```
 
 并在桌面、开始菜单创建“Codex 2007”和“恢复原版 Codex”。产品名称、安装目录、脚本入口与界面标题均使用 Codex 2007 命名。

@@ -4,6 +4,12 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-07-22
+
+### Added
+
+- 新增白名单发布构建脚本，生成带内部文件清单和独立 SHA-256 校验文件的用户安装 ZIP。
+
 ### Changed
 
 - 项目名称统一为“Codex 2007”；同步更新界面标题、设置页、运行时标识、安装目录、脚本入口、快捷方式、文档与验证契约。
@@ -18,6 +24,7 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 - 完成消息底部的原生复制、喜欢、不喜欢和继续新任务按钮改为 QQ2007 彩色图标，并显示“复制、赞、踩、分享”；原生点击处理与可访问名称保持不变。
 - 消息操作栏只装饰恰好包含复制、喜欢、不喜欢和继续新任务四种动作的紧凑原生容器；不再误标整条虚拟会话，避免长命令撑大内容宽度并造成左右错位。
 - 会话标题根据固定标题栏与主内容左边缘的实际差值动态增加安全间距，避免与左栏折叠控件重叠。
+- README 重构为 QQ2007 项目视觉首页，加入真实动图、功能差异、工作流程、快速安装和安全边界导航。
 
 - 设置页改为 QQ2007 原生视觉层：真实应用顶栏显示“Codex 2007 - 设置”，设置导航、搜索框和表单卡片采用复古蓝色风格。
 - 保留并验证所有原生设置服务行、服务图标、开关和下拉菜单；不再以“暂停主题”方式退回官方设置页。
@@ -43,5 +50,6 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 
 - Verified against Codex `26.715.4045.0` and `26.715.7063.0`.
 
-[Unreleased]: https://github.com/LeemanCheung/Codex-QQ2007-Skin/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/LeemanCheung/Codex-QQ2007-Skin/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/LeemanCheung/Codex-QQ2007-Skin/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/LeemanCheung/Codex-QQ2007-Skin/releases/tag/v1.0.0

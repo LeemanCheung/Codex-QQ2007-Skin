@@ -55,7 +55,7 @@ $files = @(
     'windows/Restore-Codex.ps1', 'windows/Install-Codex-2007.ps1',
     'assets/codex2007-title-bg.png', 'assets/codex2007-toolbar-bg.png',
     'assets/codex2007-panel-header-bg.png', 'assets/codex2007-status-bg.png',
-    'assets/codex2007-window-controls.png', 'assets/codex2007-penguin.png',
+    'assets/codex2007-penguin.png',
     'assets/codex2007-tool-new.png', 'assets/codex2007-tool-scheduled.png',
     'assets/codex2007-tool-plugins.png', 'assets/codex2007-tool-sites.png',
     'assets/codex2007-tool-pr.png', 'assets/codex2007-tool-chat.png',

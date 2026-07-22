@@ -194,7 +194,6 @@ async function buildBootstrap(assetRoot, tokenStats) {
     toolbarBg: 'codex2007-toolbar-bg.png',
     panelHeaderBg: 'codex2007-panel-header-bg.png',
     statusBg: 'codex2007-status-bg.png',
-    windowControls: 'codex2007-window-controls.png',
     penguin2007: 'codex2007-penguin.png',
     toolNew: 'codex2007-tool-new.png',
     toolScheduled: 'codex2007-tool-scheduled.png',
@@ -275,6 +274,9 @@ const verifyExpression = `(() => {
   const nativeProfileTrigger = document.querySelector('[data-qq2007-native-profile-trigger="true"]');
   const nativeModelTrigger = document.querySelector('[data-qq2007-native-model-trigger="true"]');
   const nativeSendTrigger = document.querySelector('[data-qq2007-native-send-trigger="true"]');
+  const nativeAttachTrigger = document.querySelector('[data-qq2007-native-attach-trigger="true"]');
+  const nativeAccessTrigger = document.querySelector('[data-qq2007-native-access-trigger="true"]');
+  const nativeContextIndicator = document.querySelector('[data-qq2007-native-context-indicator="true"]');
   const root = document.getElementById('root');
   const settingsSurface = Boolean(root && Array.from(root.querySelectorAll('input, textarea, [contenteditable="true"]')).some((node) => /搜索设置|search settings/i.test((node.getAttribute('placeholder') || '') + ' ' + (node.getAttribute('aria-label') || ''))));
   const settingsServiceLabels = ['插件', '浏览器', '电脑操控', '钩子', '连接', 'Git', '环境', '工作树', '已归档任务'];
@@ -307,6 +309,45 @@ const verifyExpression = `(() => {
   const nativeProfileActionReady = actionable(nativeProfileTrigger);
   const nativeModelActionReady = actionable(nativeModelTrigger);
   const nativeSendActionReady = actionable(nativeSendTrigger);
+  const nativeAttachActionReady = actionable(nativeAttachTrigger);
+  const nativeAccessActionReady = actionable(nativeAccessTrigger);
+  const nativeModelRect = nativeModelTrigger?.getBoundingClientRect();
+  const nativeContextRect = nativeContextIndicator?.getBoundingClientRect();
+  const nativeContextStyle = nativeContextIndicator ? getComputedStyle(nativeContextIndicator) : null;
+  const nativeContextLabel = (nativeContextIndicator?.getAttribute('aria-label') || '').trim();
+  const nativeContextValue = nativeContextIndicator?.dataset.qq2007ContextValue || '';
+  const nativeContextVisible = Boolean(
+    nativeContextRect
+    && nativeContextStyle
+    && nativeContextRect.width > 0
+    && nativeContextRect.height > 0
+    && nativeContextStyle.display !== 'none'
+    && nativeContextStyle.visibility !== 'hidden'
+  );
+  const nativeContextLabelReady = /上下文用量|context (?:window )?usage/i.test(nativeContextLabel);
+  const nativeContextValueReady = /[0-9]+(?:[.][0-9]+)?%/.test(nativeContextValue);
+  const nativeContextHorizontalReady = Boolean(
+    nativeModelRect && nativeContextRect && nativeContextRect.right <= nativeModelRect.left - 4
+  );
+  const nativeContextVerticalReady = Boolean(
+    nativeModelRect && nativeContextRect && Math.abs(nativeContextRect.bottom - nativeModelRect.bottom) <= 1.5
+  );
+  const nativeContextIndicatorReady = Boolean(
+    nativeContextVisible
+    && nativeModelRect
+    && nativeContextRect
+    && nativeContextLabelReady
+    && nativeContextValueReady
+    && nativeContextHorizontalReady
+    && nativeContextVerticalReady
+  );
+  const retroComposerControlsReady = Boolean(
+    document.querySelector('.qq2007-model-button .qq2007-model-icon')
+    && document.querySelector('.qq2007-model-button .qq2007-model-caret')
+    && nativeAttachActionReady
+    && nativeAccessActionReady
+    && nativeContextIndicatorReady
+  );
   const approvalDecisions = Array.from(document.querySelectorAll('button')).filter((button) => {
     if (button.closest('[id^="qq2007-"]')) return false;
     const rect = button.getBoundingClientRect();
@@ -396,6 +437,17 @@ const verifyExpression = `(() => {
   const visibleRightStageImages = rightStageImages.filter((image) => getComputedStyle(image).display !== 'none');
   const expectedStageMime = reducedMotionActive ? 'data:image/png;base64,' : 'data:image/gif;base64,';
   const expectedStageKind = reducedMotionActive ? 'static' : 'animated';
+  const visibleFriendStageImage = visibleRightStageImages.find((image) => image.closest('.qq2007-friend-stage'));
+  const friendStageAspectReady = settingsSurface || Boolean(
+    visibleFriendStageImage
+    && getComputedStyle(visibleFriendStageImage).objectFit === 'cover'
+  );
+  const friendStagePixelReady = settingsSurface || Boolean(
+    visibleFriendStageImage
+    && getComputedStyle(visibleFriendStageImage).imageRendering === 'auto'
+    && visibleFriendStageImage.naturalWidth === 390
+    && visibleFriendStageImage.naturalHeight === 320
+  );
   const animatedStagesReady = settingsSurface || Boolean(
     rightStageImages.length === 4
     && visibleRightStageImages.length === 2
@@ -461,22 +513,105 @@ const verifyExpression = `(() => {
     const style = getComputedStyle(node);
     return style.display === 'none' || style.visibility === 'hidden' || rect.width === 0 || rect.height === 0;
   });
-  const homeSurfaceDetected = Boolean(document.querySelector('[data-qq2007-home-suggestions="true"]'));
+  const newTaskNav = document.querySelector('[data-qq2007-nav="new-task"]');
+  const newTaskNavPaintHost = document.querySelector('[data-qq2007-native-nav-paint-host="new-task"]');
+  const hasClearPaint = (element) => {
+    if (!(element instanceof HTMLElement)) return false;
+    const style = getComputedStyle(element);
+    return style.backgroundColor === 'rgba(0, 0, 0, 0)'
+      && style.backgroundImage === 'none'
+      && style.boxShadow === 'none';
+  };
+  const nativeNewTaskBackdropCleared = Boolean(
+    newTaskNav
+    && newTaskNavPaintHost
+    && newTaskNavPaintHost.contains(newTaskNav)
+    && hasClearPaint(newTaskNav)
+    && hasClearPaint(newTaskNavPaintHost)
+  );
+  const decorativeWindowControlsAbsent = !document.querySelector('.qq2007-window-controls');
+  const nativeWindowControlsSafeInset = Number.parseFloat(
+    getComputedStyle(shellTopbar || document.documentElement).getPropertyValue('--spacing-token-safe-header-right'),
+  ) || 137;
+  const duplicateWindowControlGlyphsAbsent = decorativeWindowControlsAbsent
+    && !document.querySelector('.qq2007-retro-caption-underlay');
+  const nativeWindowControlsReady = duplicateWindowControlGlyphsAbsent
+    && nativeWindowControlsSafeInset >= 96;
+  const homeSuggestions = document.querySelector('[data-qq2007-home-suggestions="true"]');
+  const homePrompt = document.querySelector('[data-qq2007-home-prompt="true"]');
+  const homeSurfaceDetected = Boolean(homeSuggestions || homePrompt);
+  const homePromptHidden = !homePrompt || (() => {
+    const style = getComputedStyle(homePrompt);
+    const rect = homePrompt.getBoundingClientRect();
+    return style.display === 'none' || style.visibility === 'hidden' || rect.width === 0 || rect.height === 0;
+  })();
+  const homeCardIcons = Array.from(document.querySelectorAll('[data-qq2007-home-card="true"] .qq2007-home-card-badge img'));
+  const homeReviewAssetReady = (window.__CODEX_2007_CONFIG__?.assets?.toolPullRequests || '')
+    .startsWith('data:image/png;base64,');
+  const homeCardIconsReady = !homeSuggestions || Boolean(
+    homeCardIcons.length >= 3
+    && homeCardIcons.every((icon) => (
+      icon.complete
+      && icon.naturalWidth > 0
+      && (icon.getAttribute('src') || '').startsWith('data:image/png;base64,')
+    ))
+  );
+  const homeWelcomeRect = nodes.homeWelcome?.visible
+    ? document.getElementById('qq2007-home-welcome')?.getBoundingClientRect()
+    : null;
+  const homeSuggestionsRect = homeSuggestions?.getBoundingClientRect();
+  const homeWelcomeSuggestionGap = homeWelcomeRect && homeSuggestionsRect
+    ? Math.round(homeSuggestionsRect.top - homeWelcomeRect.bottom)
+    : null;
+  const homeWelcomeAlignedWithSuggestions = !homeSuggestions || Boolean(
+    homeWelcomeRect
+    && homeSuggestionsRect
+    && homeWelcomeSuggestionGap >= 4
+    && homeWelcomeSuggestionGap <= 12
+  );
   const homeWelcomeReady = !homeSurfaceDetected || Boolean(
     nodes.homeWelcome?.visible
     && document.querySelector('#qq2007-home-welcome .qq2007-home-welcome-bot')
     && document.querySelector('#qq2007-home-welcome .qq2007-home-welcome-status')
-    && document.querySelectorAll('[data-qq2007-home-card="true"] .qq2007-home-card-badge').length >= 3
-    && document.querySelectorAll('[data-qq2007-home-card="true"] .qq2007-home-card-copy').length >= 3
+    && homePromptHidden
+    && homeReviewAssetReady
+    && homeCardIconsReady
+    && (!homeSuggestions || (
+      document.querySelectorAll('[data-qq2007-home-card="true"] .qq2007-home-card-badge').length >= 3
+      && document.querySelectorAll('[data-qq2007-home-card="true"] .qq2007-home-card-copy').length >= 3
+    ))
   );
   const levelIcons = Array.from(document.querySelectorAll('[data-qq-level-icons] img'));
   const authenticLevelIconsReady = !state?.qqLevel || (levelIcons.length > 0 && levelIcons.every((icon) => /^(star|moon|sun|crown)$/.test(icon.dataset.qqLevelAsset || '') && (icon.getAttribute('src') || '').startsWith('data:image/png;base64,')));
   const mainSurfaceRect = document.querySelector('main.main-surface')?.getBoundingClientRect();
+  const mainTitleHeader = document.querySelector('main.main-surface > header.app-header-tint');
+  const mainTitleFrameRect = mainTitleHeader?.getBoundingClientRect();
+  const conversationViewportRect = document.querySelector('main.main-surface .thread-scroll-container')?.getBoundingClientRect();
   const mainTitleIconRect = document.querySelector('#qq2007-main-title img')?.getBoundingClientRect();
   const mainTitleClearOfLeftRail = settingsSurface || Boolean(
     mainSurfaceRect
     && mainTitleIconRect
     && mainTitleIconRect.left >= mainSurfaceRect.left + 6
+  );
+  const mainTitleAlignedWithConversationFrame = settingsSurface || Boolean(
+    mainTitleFrameRect
+    && mainSurfaceRect
+    && Math.abs(mainTitleFrameRect.left - mainSurfaceRect.left) <= 1.5
+    && Math.abs(mainTitleFrameRect.right - mainSurfaceRect.right) <= 1.5
+    && Math.abs(mainTitleFrameRect.top - mainSurfaceRect.top) <= 1.5
+  );
+  const mainTitleStyle = mainTitleHeader ? getComputedStyle(mainTitleHeader) : null;
+  const mainTitleComputedHeight = mainTitleStyle ? Number.parseFloat(mainTitleStyle.height) : null;
+  const mainTitleStyleRevisionReady = document.getElementById('codex-2007-style')?.textContent.includes('height: 46px !important') || false;
+  const mainTitleRounded = settingsSurface || Boolean(
+    mainTitleStyle
+    && ['borderTopLeftRadius', 'borderTopRightRadius', 'borderBottomRightRadius', 'borderBottomLeftRadius']
+      .every((property) => Number.parseFloat(mainTitleStyle[property]) >= 3)
+  );
+  const mainTitleBottomAlignedWithConversation = settingsSurface || Boolean(
+    mainTitleFrameRect
+    && conversationViewportRect
+    && Math.abs(mainTitleFrameRect.bottom - conversationViewportRect.top) <= 1.5
   );
   const nativeMessageActions = Array.from(document.querySelectorAll('main.main-surface button[aria-label]')).filter((button) => (
     /^(?:复制|复制消息|copy|copy message|喜欢|不喜欢|like|dislike|从这里继续新任务|continue(?: from here)?(?: in a)? new task|fork|share|分享)$/i.test((button.getAttribute('aria-label') || '').trim())
@@ -496,6 +631,28 @@ const verifyExpression = `(() => {
       && ['copy', 'like', 'dislike', 'share'].every((kind) => kinds.has(kind));
   });
   const threadScroller = document.querySelector('.thread-scroll-container');
+  const classicScrollbarTargets = Array.from(new Set([
+    threadScroller,
+    ...Array.from(document.querySelectorAll('aside.app-shell-left-panel *, [data-qq2007-settings-navigation="true"], [data-qq2007-settings-main="true"]')).filter((element) => {
+      const style = getComputedStyle(element);
+      return element.scrollHeight > element.clientHeight + 1 && /auto|scroll/.test(style.overflowY);
+    }),
+  ].filter(Boolean)));
+  const injectedSkinCss = document.getElementById('codex-2007-style')?.textContent || '';
+  const retroScrollbarCssReady = [
+    'width: 17px',
+    '::-webkit-scrollbar-thumb',
+    '::-webkit-scrollbar-button:vertical:decrement',
+    '::-webkit-scrollbar-button:vertical:increment',
+    '::-webkit-scrollbar-button:horizontal:decrement',
+    '::-webkit-scrollbar-button:horizontal:increment',
+  ].every((contract) => injectedSkinCss.includes(contract));
+  const retroScrollbarTargetsReady = classicScrollbarTargets.length > 0 && classicScrollbarTargets.every((element) => (
+    getComputedStyle(element).getPropertyValue('--qq2007-scrollbar-skin').trim() === 'xp-luna'
+    && getComputedStyle(element).scrollbarColor === 'auto'
+    && getComputedStyle(element).scrollbarWidth === 'auto'
+  ));
+  const retroScrollbarReady = retroScrollbarCssReady && retroScrollbarTargetsReady;
   const conversation = threadScroller?.querySelector('[data-thread-find-target="conversation"]');
   const threadRect = threadScroller?.getBoundingClientRect();
   const conversationRect = conversation?.getBoundingClientRect();
@@ -534,17 +691,27 @@ const verifyExpression = `(() => {
     && /^Codex 2007\\s*-\\s*.+/.test(titleText)
     && !nativeMenuButtonsVisible
     && nativeNavGlyphsHidden
+    && nativeNewTaskBackdropCleared
+    && nativeWindowControlsReady
     && nativeActionControlsReady
+    && (homeSurfaceDetected || retroComposerControlsReady)
+    && retroScrollbarReady
     && sendVisualHitTarget
     && homeWelcomeReady
+    && homeWelcomeAlignedWithSuggestions
     && document.documentElement.scrollWidth <= innerWidth + 2
     && nativeAppIntact
     && authenticLevelIconsReady
     && animatedStagesReady
+    && friendStageAspectReady
+    && friendStagePixelReady
     && classicMessageActionsReady
     && classicMessageActionStripsScoped
     && conversationTurnsContained
     && mainTitleClearOfLeftRail
+    && mainTitleAlignedWithConversationFrame
+    && mainTitleRounded
+    && (homeSurfaceDetected || mainTitleBottomAlignedWithConversation)
     ))
   );
   return {
@@ -577,12 +744,42 @@ const verifyExpression = `(() => {
       nativeApprovalActive,
       nativeActionControlsReady,
       nativeNavGlyphsHidden,
+      nativeNewTaskBackdropCleared,
+      decorativeWindowControlsAbsent,
+      duplicateWindowControlGlyphsAbsent,
+      nativeWindowControlsSafeInset,
+      nativeWindowControlsReady,
       nativeProfileActionReady,
       nativeModelActionReady,
       nativeSendActionReady,
+      nativeAttachActionReady,
+      nativeAccessActionReady,
+      nativeContextIndicatorReady,
+      nativeContextVisible,
+      nativeContextLabelReady,
+      nativeContextValueReady,
+      nativeContextHorizontalReady,
+      nativeContextVerticalReady,
+      nativeContextLabel,
+      nativeContextValue,
+      retroComposerControlsReady,
+      retroScrollbarReady,
+      retroScrollbarCssReady,
+      retroScrollbarTargetsReady,
+      retroScrollbarTargetCount: classicScrollbarTargets.length,
+      contextIndicatorRight: nativeContextRect ? Math.round(nativeContextRect.right) : null,
+      contextIndicatorBottom: nativeContextRect ? Math.round(nativeContextRect.bottom) : null,
+      modelButtonLeft: nativeModelRect ? Math.round(nativeModelRect.left) : null,
+      modelButtonBottom: nativeModelRect ? Math.round(nativeModelRect.bottom) : null,
       sendVisualHitTarget,
       homeSurfaceDetected,
+      homePromptHidden,
+      homeCardIconsReady,
+      homeCardIconCount: homeCardIcons.length,
+      homeReviewAssetReady,
       homeWelcomeReady,
+      homeWelcomeAlignedWithSuggestions,
+      homeWelcomeSuggestionGap,
       nativeOutputOverlayActive,
       settingsSurface,
       settingsMenuIntact,
@@ -615,6 +812,8 @@ const verifyExpression = `(() => {
       levelIconCount: levelIcons.length,
       reducedMotionActive,
       animatedStagesReady,
+      friendStageAspectReady,
+      friendStagePixelReady,
       animatedStageCount: visibleRightStageImages.length,
       classicMessageActionsReady,
       classicMessageActionCount: nativeMessageActions.length,
@@ -623,6 +822,17 @@ const verifyExpression = `(() => {
       conversationTurnsContained,
       visibleConversationTurnCount: visibleTurns.length,
       mainTitleClearOfLeftRail,
+      mainTitleAlignedWithConversationFrame,
+      mainTitleRounded,
+      mainTitleBottomAlignedWithConversation,
+      mainTitleComputedHeight,
+      mainTitleStyleRevisionReady,
+      mainTitleFrameLeft: mainTitleFrameRect ? Math.round(mainTitleFrameRect.left) : null,
+      mainTitleFrameRight: mainTitleFrameRect ? Math.round(mainTitleFrameRect.right) : null,
+      mainTitleFrameBottom: mainTitleFrameRect ? Math.round(mainTitleFrameRect.bottom) : null,
+      conversationViewportTop: conversationViewportRect ? Math.round(conversationViewportRect.top) : null,
+      conversationFrameLeft: mainSurfaceRect ? Math.round(mainSurfaceRect.left) : null,
+      conversationFrameRight: mainSurfaceRect ? Math.round(mainSurfaceRect.right) : null,
       mainTitleIconLeft: mainTitleIconRect ? Math.round(mainTitleIconRect.left) : null,
       mainSurfaceLeft: mainSurfaceRect ? Math.round(mainSurfaceRect.left) : null,
     },
@@ -642,12 +852,19 @@ const inspectExpression = `(() => {
       classes: Array.from(element.classList).slice(0, 16),
       role: element.getAttribute('role'),
       ariaLabel: element.getAttribute('aria-label'),
+      title: element.getAttribute('title'),
+      text: (element.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 120),
+      ariaHasPopup: element.getAttribute('aria-haspopup'),
+      ariaExpanded: element.getAttribute('aria-expanded'),
       rect: {
         x: Math.round(rectangle.x), y: Math.round(rectangle.y),
         width: Math.round(rectangle.width), height: Math.round(rectangle.height),
       },
       display: style.display,
       position: style.position,
+      backgroundColor: style.backgroundColor,
+      backgroundImage: style.backgroundImage,
+      boxShadow: style.boxShadow,
     };
   };
   const root = document.getElementById('root');
@@ -673,6 +890,38 @@ const inspectExpression = `(() => {
     root: describe(root),
     shell: describe(shell),
     shellTree: tree(shell),
+    composerTree: tree(document.querySelector('.composer-surface-chrome')),
+    composerButtons: Array.from(document.querySelectorAll('.composer-surface-chrome button'))
+      .filter((button) => !button.closest('[id^="qq2007-"]'))
+      .map(describe),
+    composerLabeledElements: Array.from(document.querySelectorAll('.composer-surface-chrome [aria-label], .composer-surface-chrome [title]'))
+      .filter((element) => !element.closest('[id^="qq2007-"]'))
+      .map(describe),
+    sidebarNavigation: Array.from(document.querySelectorAll('aside.app-shell-left-panel [data-qq2007-nav]')).map((element) => ({
+      element: describe(element),
+      parent: describe(element.parentElement),
+      grandparent: describe(element.parentElement?.parentElement),
+    })),
+    homeLayout: (() => {
+      const welcome = document.getElementById('qq2007-home-welcome');
+      const suggestions = document.querySelector('[data-qq2007-home-suggestions="true"]');
+      const prompt = document.querySelector('[data-qq2007-home-prompt="true"]');
+      return {
+        welcome: describe(welcome),
+        welcomeParent: describe(welcome?.parentElement),
+        suggestions: describe(suggestions),
+        suggestionsParent: describe(suggestions?.parentElement),
+        prompt: describe(prompt),
+        promptParent: describe(prompt?.parentElement),
+        composer: describe(document.querySelector('.composer-surface-chrome')),
+        main: describe(document.querySelector('main.main-surface')),
+      };
+    })(),
+    scrollableElements: Array.from(document.querySelectorAll('*')).filter((element) => {
+      const style = getComputedStyle(element);
+      return (element.scrollHeight > element.clientHeight + 1 && /auto|scroll/.test(style.overflowY))
+        || (element.scrollWidth > element.clientWidth + 1 && /auto|scroll/.test(style.overflowX));
+    }).slice(0, 32).map(describe),
   };
 })()`;
 

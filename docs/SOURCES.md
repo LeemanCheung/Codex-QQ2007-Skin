@@ -20,7 +20,7 @@
 - 选择器与 DOM 兼容性；
 - 主题节点尺寸和三栏布局；
 - 正常页、设置页及原生点击命中结果；
-- Codex `26.715.4045.0` 与 `26.715.7063.0` 的验收结果；
+- Codex `26.715.4045.0`、`26.715.7063.0` 与 `26.715.8383.0` 的验收结果；
 - Token 统计器的读取边界。
 
 这些运行证据可能包含个人任务、路径和用量，因此仓库只保留脱敏后的结论与复现方法，不提交原始 JSON、DOM 或截图。
@@ -28,8 +28,8 @@
 ## 素材声明
 
 - `codex2007-*`：为本项目制作的界面、角色和背景素材。
-- `qq-retro-stage.png`：为右下角 QQ 秀生成的项目原创企鹅形象；不包含第三方 QQ 原始美术、Logo 或文字。
-- `codex2007-bot-typing-sprites.png`、`qq-retro-wave-sprites.png`：以项目自有角色 PNG 为参考生成的 2×2 动作关键帧，分别描述左右手敲键盘，以及右手挥动并眨眼。
+- `qq-retro-stage.png`：以用户提供的经典 QQ 企鹅截图作为形象与身材比例参考生成，不直接包含参考截图的原始像素、Logo 或文字；QQ 企鹅形象及相关权利归腾讯所有，本项目不代表腾讯授权或背书。
+- `codex2007-bot-typing-sprites.png`、`qq-retro-wave-sprites.png`：前者以项目自有角色 PNG 为参考；后者以用户提供的经典 QQ 企鹅截图为比例参考，使用内置图像生成工具生成并编辑为带轻微早期客户端像素质感的 2×2 挥手眨眼动作关键帧。
 - `codex2007-bot-stage.gif`、`qq-retro-stage.gif`：由上述关键帧通过 `scripts/build-animated-stages.py` 确定性裁切、统一背景并编排生成；GIF 不引入新的第三方素材。
 - `qq-level-*`：从历史等级参考图提取的第三方经典等级图标，不属于 MIT 授权，详见 [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md)。
 - 未打包第三方换肤引擎、原始 QQ 主题包或修改后的 Codex 二进制。

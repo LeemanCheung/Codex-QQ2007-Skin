@@ -4,6 +4,21 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-07-22
+
+### Fixed
+
+- 新建任务页不再因原生标题容器层级变化而让“我们该构建什么？”覆盖 QQ2007 快捷任务卡；输入文本后即使原生建议按钮收起，Codex 2007 服务台欢迎框也会继续保留。
+- 标题栏不再绘制或垫衬第二套最小化、最大化、关闭按钮；为 Electron/Windows 原生窗控保留动态安全区，消除重复图标、错位和点击区域重叠。
+- 中央任务标题框改为跟随会话窗口 `main-surface` 的外边界，并使用完整四边边框与圆角；窗口缩放和原生输出侧栏切换后会重新同步。
+- 中央任务标题框高度与 Codex 原生会话头部预留的 46px 保持一致，消除标题底边与会话内容顶边之间的空白带和第二条水平线。
+- 输入区的添加内容、访问权限和模型选择改为统一的 QQ2007 立体工具按钮；恢复 Codex 原生上下文用量图标，并在模型按钮左侧显示同源实时百分比。
+- 主会话、任务列表和设置页统一采用 17px Windows XP Luna/QQ2007 滚动条，包含浅蓝轨道、立体滑块、四向箭头以及悬停和按下状态。
+- 修复“代码体检中心”快捷任务引用错误素材键导致的破图，并为首页卡片加入默认图标兜底和图片解码验收。
+- 清除左侧“新建任务”复合按钮残留的 Codex 原生圆角底板；文字动作与右侧加号继续使用原生点击语义，并统一为单层 QQ2007 导航悬停态。
+- 右下角企鹅按用户提供的四格参考图重绘并再次横向收窄，收紧白肚皮与四肢；挥手眨眼循环同时锁定脚底和嘴部横向中心，消除左右横跳，静态回退与动画中性帧保持一致；好友舞台素材改为 390×320 宽屏满幅背景，并加入克制的 QQ2007 像素阶梯感，避免两侧留白及低分辨率放大模糊。
+- 新建任务页的服务台欢迎卡改为跟随原生快捷任务区实时定位，消除固定负偏移在不同项目和窗口高度下产生的大块空隙；新建页缺少会话上下文图标或滚动区时不再让监视器误判为未就绪。
+
 ## [1.1.0] - 2026-07-22
 
 ### Added
@@ -50,6 +65,7 @@ All notable changes are documented here. The format follows [Keep a Changelog](h
 
 - Verified against Codex `26.715.4045.0` and `26.715.7063.0`.
 
-[Unreleased]: https://github.com/LeemanCheung/Codex-QQ2007-Skin/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/LeemanCheung/Codex-QQ2007-Skin/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/LeemanCheung/Codex-QQ2007-Skin/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/LeemanCheung/Codex-QQ2007-Skin/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/LeemanCheung/Codex-QQ2007-Skin/releases/tag/v1.0.0

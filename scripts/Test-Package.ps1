@@ -112,7 +112,7 @@ function Test-RequiredFiles {
         'README.md', 'SECURITY.md', 'LICENSE', 'LICENSE.txt', 'NOTICE.txt', 'THIRD_PARTY_NOTICES.md',
         'CHANGELOG.md', 'CONTRIBUTING.md', 'SUPPORT.md', 'docs/SOURCES.md',
         'scripts/build-animated-stages.py', 'scripts/Build-Release.ps1', 'scripts/Test-Release.ps1',
-        'assets/codex2007-title-bg.png', 'assets/codex2007-window-controls.png',
+        'assets/codex2007-title-bg.png',
         'assets/codex2007-bot-typing-sprites.png', 'assets/codex2007-bot-stage.gif',
         'assets/qq-retro-stage.png', 'assets/qq-retro-wave-sprites.png', 'assets/qq-retro-stage.gif',
         'assets/qq-level-star.png', 'assets/qq-level-moon.png',
@@ -136,9 +136,39 @@ function Test-AnimatedAssets {
             $frameCount = $image.GetFrameCount($dimension)
             if ($frameCount -lt 6) { Add-Failure "Animated asset has too few frames: $file ($frameCount)" }
             if ((Get-Item -LiteralPath $path).Length -gt 1.5MB) { Add-Failure "Animated asset exceeds 1.5 MB: $file" }
+            if ($file -eq 'assets/qq-retro-stage.gif' -and ($image.Width -ne 390 -or $image.Height -ne 320)) {
+                Add-Failure "QQ friend-stage asset must be 390x320 for crisp full-bleed retro rendering: $($image.Width)x$($image.Height)"
+            }
         }
         catch { Add-Failure "Animated asset is invalid: $file ($($_.Exception.Message))" }
         finally { if ($null -ne $image) { $image.Dispose() } }
+    }
+}
+
+function Test-QQCharacterProportionContract {
+    $builder = Get-Content -LiteralPath (Join-Path $root 'scripts/build-animated-stages.py') -Raw -Encoding UTF8
+    $css = Get-Content -LiteralPath (Join-Path $root 'src/skin.css') -Raw -Encoding UTF8
+    $injector = Get-Content -LiteralPath (Join-Path $root 'src/injector.mjs') -Raw -Encoding UTF8
+    $contractSources = $builder + $css + $injector
+    foreach ($contract in @(
+        'def validate_qq_proportions',
+        '0.82 <= neutral_ratio <= 0.92',
+        'max(baselines) - min(baselines) > 1',
+        'max(anchors) - min(anchors) > 1',
+        'horizontal_scale=0.90',
+        'align_face=True',
+        'friendStageAspectReady',
+        'friendStagePixelReady',
+        'QQ_STAGE_SIZE = (390, 320)',
+        'Image.Resampling.NEAREST',
+        '.qq2007-friend-stage > .qq2007-motion-stage > img',
+        'object-fit: cover',
+        'image-rendering: auto',
+        'validate_qq_proportions(keyframes)'
+    )) {
+        if (-not $contractSources.Contains($contract)) {
+            Add-Failure "Missing QQ character-proportion contract: $contract"
+        }
     }
 }
 
@@ -308,18 +338,176 @@ function Test-ClassicMessageActionsContract {
     }
 }
 
-function Test-MainTitleSafeInsetContract {
+function Test-MainTitleFrameContract {
     $runtime = Get-Content -LiteralPath (Join-Path $root 'src/skin-runtime.js') -Raw -Encoding UTF8
     $injector = Get-Content -LiteralPath (Join-Path $root 'src/injector.mjs') -Raw -Encoding UTF8
     $css = Get-Content -LiteralPath (Join-Path $root 'src/skin.css') -Raw -Encoding UTF8
-    foreach ($contract in @('syncMainTitleSafeInset', 'mainRect.left - headerRect.left', '--qq2007-main-title-safe-inset')) {
+    foreach ($contract in @(
+        'const syncMainTitleFrame =',
+        'const mainRect = main.getBoundingClientRect()',
+        '--qq2007-main-title-frame-left',
+        'window.innerWidth - mainRect.right',
+        'height: 46px !important',
+        'min-height: 46px !important'
+    )) {
         if (-not $runtime.Contains($contract) -and -not $css.Contains($contract)) {
-            Add-Failure "Missing main-title safe-inset contract: $contract"
+            Add-Failure "Missing main-title frame contract: $contract"
         }
     }
-    foreach ($contract in @('mainTitleClearOfLeftRail', 'mainTitleIconLeft', 'mainSurfaceLeft')) {
+    foreach ($contract in @(
+        'mainTitleClearOfLeftRail',
+        'mainTitleAlignedWithConversationFrame',
+        'mainTitleRounded',
+        'mainTitleBottomAlignedWithConversation',
+        'conversationViewportTop',
+        'mainTitleFrameLeft',
+        'conversationFrameLeft'
+    )) {
         if (-not $injector.Contains($contract)) {
-            Add-Failure "Missing main-title collision verification: $contract"
+            Add-Failure "Missing main-title alignment verification: $contract"
+        }
+    }
+}
+
+function Test-HomeSurfaceStateContract {
+    $runtime = Get-Content -LiteralPath (Join-Path $root 'src/skin-runtime.js') -Raw -Encoding UTF8
+    $injector = Get-Content -LiteralPath (Join-Path $root 'src/injector.mjs') -Raw -Encoding UTF8
+    foreach ($contract in @(
+        'const findHomePrompt =',
+        'const findHomeAnchor =',
+        'const homeSurfaceActive = Boolean(prompt || suggestions)',
+        '--qq2007-home-welcome-top',
+        'suggestionsRect.top - anchorRect.top - welcomeHeight - 6',
+        'for (const card of suggestions?.querySelectorAll'
+    )) {
+        if (-not $runtime.Contains($contract)) {
+            Add-Failure "Missing home-surface state contract: $contract"
+        }
+    }
+    foreach ($contract in @(
+        'const homeSurfaceDetected = Boolean(homeSuggestions || homePrompt)',
+        'const homePromptHidden =',
+        'homeWelcomeAlignedWithSuggestions',
+        'homeWelcomeSuggestionGap',
+        '(homeSurfaceDetected || retroComposerControlsReady)',
+        '(homeSurfaceDetected || mainTitleBottomAlignedWithConversation)',
+        '&& homePromptHidden',
+        '(!homeSuggestions || ('
+    )) {
+        if (-not $injector.Contains($contract)) {
+            Add-Failure "Missing home-surface verification contract: $contract"
+        }
+    }
+}
+
+function Test-HomeCardAssetContract {
+    $runtime = Get-Content -LiteralPath (Join-Path $root 'src/skin-runtime.js') -Raw -Encoding UTF8
+    $injector = Get-Content -LiteralPath (Join-Path $root 'src/injector.mjs') -Raw -Encoding UTF8
+    if ($runtime.Contains('config.assets.toolPr')) {
+        Add-Failure 'Home review card references undefined asset key: config.assets.toolPr'
+    }
+    foreach ($contract in @(
+        'config.assets.toolPullRequests',
+        'presentation.asset || config.assets.toolNew',
+        'homeCardIconsReady',
+        'homeCardIconCount',
+        'homeReviewAssetReady',
+        "startsWith('data:image/png;base64,')"
+    )) {
+        if (-not $runtime.Contains($contract) -and -not $injector.Contains($contract)) {
+            Add-Failure "Missing home-card asset contract: $contract"
+        }
+    }
+}
+
+function Test-NativeWindowControlsContract {
+    $runtime = Get-Content -LiteralPath (Join-Path $root 'src/skin-runtime.js') -Raw -Encoding UTF8
+    $injector = Get-Content -LiteralPath (Join-Path $root 'src/injector.mjs') -Raw -Encoding UTF8
+    $css = Get-Content -LiteralPath (Join-Path $root 'src/skin.css') -Raw -Encoding UTF8
+    if ($runtime.Contains('config.assets.windowControls') -or $injector.Contains("windowControls: 'codex2007-window-controls.png'")) {
+        Add-Failure 'Decorative window-control imagery must not overlap native Electron controls.'
+    }
+    foreach ($contract in @(
+        '--spacing-token-safe-header-right',
+        ') || 137',
+        'duplicateWindowControlGlyphsAbsent',
+        'nativeWindowControlsSafeInset',
+        'nativeWindowControlsReady'
+    )) {
+        if (-not $runtime.Contains($contract) -and -not $css.Contains($contract) -and -not $injector.Contains($contract)) {
+            Add-Failure "Missing native window-controls contract: $contract"
+        }
+    }
+    foreach ($forbidden in @('makeRetroCaptionUnderlay', 'qq2007-retro-caption-underlay')) {
+        if ($runtime.Contains($forbidden) -or $css.Contains($forbidden)) {
+            Add-Failure "Renderer-only caption decoration would duplicate native controls: $forbidden"
+        }
+    }
+}
+
+function Test-RetroComposerControlsContract {
+    $runtime = Get-Content -LiteralPath (Join-Path $root 'src/skin-runtime.js') -Raw -Encoding UTF8
+    $injector = Get-Content -LiteralPath (Join-Path $root 'src/injector.mjs') -Raw -Encoding UTF8
+    $css = Get-Content -LiteralPath (Join-Path $root 'src/skin.css') -Raw -Encoding UTF8
+    foreach ($contract in @(
+        'qq2007NativeAttachTrigger',
+        'qq2007NativeAccessTrigger',
+        'qq2007NativeContextIndicator',
+        'qq2007ContextValue',
+        'qq2007-model-icon',
+        'qq2007-model-caret',
+        '--qq2007-composer-attach-bg',
+        '--qq2007-shield-bg',
+        'nativeContextIndicatorReady',
+        'retroComposerControlsReady',
+        'contextIndicatorRight',
+        'modelButtonLeft'
+    )) {
+        if (-not $runtime.Contains($contract) -and -not $css.Contains($contract) -and -not $injector.Contains($contract)) {
+            Add-Failure "Missing retro composer-controls contract: $contract"
+        }
+    }
+}
+
+function Test-RetroScrollbarContract {
+    $injector = Get-Content -LiteralPath (Join-Path $root 'src/injector.mjs') -Raw -Encoding UTF8
+    $css = Get-Content -LiteralPath (Join-Path $root 'src/skin.css') -Raw -Encoding UTF8
+    foreach ($contract in @(
+        '--qq2007-scrollbar-skin: xp-luna',
+        'scrollbar-color: auto !important',
+        'scrollbar-width: auto !important',
+        '::-webkit-scrollbar-button:vertical:start:increment',
+        '::-webkit-scrollbar-button:vertical:end:decrement',
+        '::-webkit-scrollbar-thumb',
+        '::-webkit-scrollbar-button:vertical:decrement',
+        '::-webkit-scrollbar-button:vertical:increment',
+        '::-webkit-scrollbar-button:horizontal:decrement',
+        '::-webkit-scrollbar-button:horizontal:increment',
+        'height: 17px',
+        'width: 17px',
+        'retroScrollbarReady',
+        'retroScrollbarCssReady',
+        'retroScrollbarTargetsReady',
+        'retroScrollbarTargetCount'
+    )) {
+        if (-not $css.Contains($contract) -and -not $injector.Contains($contract)) {
+            Add-Failure "Missing retro scrollbar contract: $contract"
+        }
+    }
+}
+
+function Test-NativeNewTaskBackdropContract {
+    $runtime = Get-Content -LiteralPath (Join-Path $root 'src/skin-runtime.js') -Raw -Encoding UTF8
+    $injector = Get-Content -LiteralPath (Join-Path $root 'src/injector.mjs') -Raw -Encoding UTF8
+    $css = Get-Content -LiteralPath (Join-Path $root 'src/skin.css') -Raw -Encoding UTF8
+    foreach ($contract in @(
+        'qq2007NativeNavPaintHost',
+        'data-qq2007-native-nav-paint-host="new-task"',
+        '> [data-qq2007-nav="new-task"]:hover',
+        'nativeNewTaskBackdropCleared'
+    )) {
+        if (-not $runtime.Contains($contract) -and -not $injector.Contains($contract) -and -not $css.Contains($contract)) {
+            Add-Failure "Missing native New task backdrop contract: $contract"
         }
     }
 }
@@ -331,6 +519,7 @@ Test-VersionConsistency
 Test-CanonicalProductNaming
 Test-RequiredFiles
 Test-AnimatedAssets
+Test-QQCharacterProportionContract
 Test-MarkdownLinks
 Test-NoRuntimeArtifacts
 Test-ApprovalOverlayProtection
@@ -338,7 +527,13 @@ Test-NativeFloatingTrayScope
 Test-SettingsHeightChain
 Test-SettingsSidebarHeightContract
 Test-ClassicMessageActionsContract
-Test-MainTitleSafeInsetContract
+Test-MainTitleFrameContract
+Test-HomeSurfaceStateContract
+Test-HomeCardAssetContract
+Test-NativeWindowControlsContract
+Test-RetroComposerControlsContract
+Test-RetroScrollbarContract
+Test-NativeNewTaskBackdropContract
 
 if ($failures.Count -gt 0) {
     $failures | ForEach-Object { Write-Error $_ }

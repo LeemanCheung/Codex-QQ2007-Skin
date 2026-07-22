@@ -21,7 +21,7 @@ try {
         assets = @(
             'codex2007-title-bg.png', 'codex2007-toolbar-bg.png',
             'codex2007-panel-header-bg.png', 'codex2007-status-bg.png',
-            'codex2007-window-controls.png', 'codex2007-penguin.png',
+            'codex2007-penguin.png',
             'codex2007-tool-new.png', 'codex2007-tool-scheduled.png',
             'codex2007-tool-plugins.png', 'codex2007-tool-sites.png',
             'codex2007-tool-pr.png', 'codex2007-tool-chat.png',
